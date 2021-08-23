@@ -1,0 +1,96 @@
+(in-package :cl-user)
+
+(defpackage :qqbot.head
+  (:use :common-lisp :random-state :jonathan :babel)
+  (:export
+   :run-shell
+   :random-int-r
+   :assoc-value
+   :split-s
+   :string-merge
+   :string-merges
+   :bits-to-json
+   :list-directory
+   :load-json-file
+   :save-json-file
+   :lst-line-string))
+
+(defpackage :qqbot.web
+  (:use :common-lisp :drakma :qqbot.head :babel :jonathan)
+  (:export
+   :generate-url
+   :web-post
+   :web-get))
+
+(defpackage :qqbot.bot
+  (:use :common-lisp :drakma :qqbot.head :babel :qqbot.web)
+  (:export
+   :get-master
+   :is-master
+   :add-admin
+   :remove-admin
+   :is-admin
+   :changep
+   :list-admin
+   :save-admin
+   :load-admin
+
+   :get-group-list
+
+   :verify :bind :release
+   :mute-group-member
+   :gmessage-text
+   :gmessage-picture
+   :send-message
+   :send-message-text
+   :send-picture
+   :sender-groupp
+   :sender-id
+   :sender-name
+   :group-id
+   :group-name
+   :target-id
+   :get-text-message-chain
+   :add-command
+   :remove-command
+   :add-mode-command
+   :remove-mode-command
+   :active-mode
+   :deactive-mode
+   :handle-message
+   :get-all-command
+   :run
+   :args-type))
+
+(defpackage :qqbot.text
+  (:use :common-lisp :qqbot.bot :qqbot.web)
+  (:export
+   :get-random-text))
+
+(defpackage :qqbot.picture
+  (:use :common-lisp :qqbot.bot :qqbot.head :qqbot.web)
+  (:export
+   :get-random-picture
+   :save-picture
+   :get-pixiv-pictures))
+
+(defpackage :qqbot.bt
+  (:use :common-lisp :qqbot.bot :drakma)
+  (:export
+   :searchBt))
+
+(defpackage :qqbot.card
+  (:use :common-lisp :qqbot.bot :qqbot.head :cl-ppcre)
+  (:export
+   :handle-code
+   :load-cards
+   :list-cards
+   :draw-card))
+
+(defpackage :qqbot.game
+  (:use :common-lisp :qqbot.bot :qqbot.head)
+  (:export))
+
+(defpackage :qqbot
+  (:use :common-lisp :qqbot.head :qqbot.bot :bordeaux-threads)
+  (:export :start))
