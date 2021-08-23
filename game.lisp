@@ -68,7 +68,7 @@
     (if result
         (progn
           (decf (r-bullet play))
-          (setf (r-player play) (remove (elt (r-player play) (r-run play)) (r-player play)))))
+          (setf (r-player play) (delete (elt (r-player play) (r-run play)) (r-player play)))))
     result))
 
 (defun list-player (group)

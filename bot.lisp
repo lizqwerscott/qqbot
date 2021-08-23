@@ -23,7 +23,7 @@
   (vector-push-extend qq *admin*))
 
 (defun remove-admin (qq)
-  (remove qq *admin*))
+  (setf *admin* (delete qq *admin*)))
 
 (defun is-admin (qq)
   (find qq *admin*))
@@ -190,7 +190,7 @@
 (defun deactive-mode (str group)
   (let ((mode (gethash str *command-mode-active-map*)))
     (when mode
-      (setf (gethash str *command-mode-active-map*) (remove group mode)))))
+      (setf (gethash str *command-mode-active-map*) (delete group mode)))))
 
 (defun str-type (str)
   (let ((object (read-from-string str)))
