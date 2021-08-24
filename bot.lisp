@@ -198,7 +198,8 @@
   )))
 
 (defun args-type (args &optional (types nil))
-  (when (>= (length args) (length types))
+  (when (and (not (= 0 (length types)))
+             (>= (length args) (length types)))
     (let ((result t))
       (dotimes (i (length args))
         (let ((object (read-from-string (elt args i))))
