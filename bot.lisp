@@ -111,6 +111,20 @@
   `(("type" . "Image")
     ("url" . ,url)))
 
+(defun gmessage-music-share (title summary jumpurl pictureurl musicurl brief)
+  `(("type" . "MusicShare")
+    ("kind" . "NeteaseCloudMusic")
+    ("title" . ,title)
+    ("summary" . ,summary)
+    ("jumpUrl" . ,jumpurl)
+    ("pictureUrl" . ,pictureurl)
+    ("musicUrl" . ,musicurl)
+    ("brief" . ,brief)))
+
+(defun gmessage-json (json)
+  `(("type" . "Json")
+    ("json" . ,json)))
+
 (defun send-message (target message-chain)
   (let ((command (if (find target *group-list*) "sendGroupMessage" "sendFriendMessage")))
     (send-command-post command
@@ -126,6 +140,12 @@
 
 (defun send-picture (target url)
   (send-message target `(,(gmessage-picture url))))
+
+(defun send-music-share (target title summary jumpUrl pictureUrl musicUrl &optional (brief ""))
+  (send-message target `(,(gmessage-music-share title summary jumpUrl pictureUrl musicUrl brief))))
+
+(defun send-json (target json)
+  (send-message target `(,(gmessage-json json))))
 
 (defun sender-groupp (sender)
   (assoc-value sender "group"))
@@ -198,15 +218,16 @@
   )))
 
 (defun args-type (args &optional (types nil))
-  (when (and (not (= 0 (length types)))
-             (>= (length args) (length types)))
-    (let ((result t))
-      (dotimes (i (length args))
-        (let ((object (read-from-string (elt args i))))
-          (if (>= i (length types))
-              (setf result (funcall (car (last types)) object))
-              (setf result (funcall (elt types i) object)))))
-      result)))
+  (if (and (= 0 (length args)) (= 0 (length types))) t
+      (when (and (not (= 0 (length types)))
+                 (>= (length args) (length types)))
+        (let ((result t))
+          (dotimes (i (length args))
+            (let ((object (read-from-string (elt args i))))
+              (if (>= i (length types))
+                  (setf result (funcall (car (last types)) object))
+                  (setf result (funcall (elt types i) object)))))
+      result))))
 
 ;;handle signal message
 (defun handle-message (message)
@@ -258,8 +279,6 @@
                                      (send-message-text target "这个命令没有帮助,这么简单的命令还需要看帮助,你真是太弱了")))
                                (send-message-text target "没有这个命令, 你可以用 陈睿 help 来获取所以命令"))
                            (progn
-                             (send-message-text-lst target
-                                                    (list ""))
                              (send-message-text target "命令的使用方法 陈睿 命令 参数1 参数2,所有命令后面的参数以空格分割, help 后面加命令的名字获取每条命令详细帮助")
                              (send-message-text target
                                                 (lst-line-string commands)))))

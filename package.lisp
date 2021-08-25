@@ -44,6 +44,8 @@
    :send-message
    :send-message-text
    :send-picture
+   :send-music-share
+   :send-json
    :sender-groupp
    :sender-id
    :sender-name
@@ -90,6 +92,9 @@
 (defpackage :qqbot.game
   (:use :common-lisp :qqbot.bot :qqbot.head)
   (:export))
+
+(defpackage :qqbot.song
+  (:use :common-lisp :qqbot.bot :qqbot.head :qqbot.web))
 
 (defpackage :qqbot
   (:use :common-lisp :qqbot.head :qqbot.bot :bordeaux-threads)

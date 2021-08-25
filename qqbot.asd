@@ -20,4 +20,5 @@
                (:file "bt")
                (:file "card")
                (:file "game")
+               (:file "song")
                (:file "main")))
