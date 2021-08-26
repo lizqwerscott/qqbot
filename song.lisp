@@ -4,13 +4,13 @@
   (let ((code (assoc-value data "code")))
     (if (= code 200)
         (assoc-value data data-name)
-        (format t "error:~A~%" data))))
+        (format t "error-song:~A~%" data))))
 
-(defun search-song (songname)
+(defun search-song (songname &optional (limit 3))
   (parse-data (web-get "127.0.0.1:3000" "cloudsearch"
                        `(("keywords" . ,(purl:url-encode songname))
                          ("type" . 1)
-                         ("limit" . 3))
+                         ("limit" . ,limit))
             :jsonp t)))
 
 
@@ -31,26 +31,12 @@
 (defun get-url (mp3)
   (list (assoc-value mp3 "url")))
 
-(defun test (result target)
-  (let ((urls (mapcar #'(lambda (song)
-                                                   (format t "song:~A~%" song)
-                                                   (format t "id:~A~%" (assoc-value song "id"))
-                                                   (let ((mp3 (get-mp3 (assoc-value song
-                                                                                    "id"))))
-                                                     (when mp3
-                                                       (get-url (car mp3)))))
-                                               (get-info-song result))))
-                             (dolist (url urls)
-                               (when url
-                                 (send-music-share target "11" "222" "https://baidu.com" "" (car url))
-                                 ;(send-json target (jonathan:to-json url :from :alist))
-                                 ))))
-
 (add-command "点歌"
              #'(lambda (sender args)
-                 (if (args-type args (list #'symbolp))
+                 (if (args-type args (list #'numberp #'symbolp))
                      (let ((target (target-id sender))
-                           (result (search-song (first args))))
+                           (result (search-song (string-merges (cdr args) " ")
+                                                (first args))))
                        (if result
                            (let ((songs (get-info-song result)))
                              (dolist (song songs)
@@ -65,6 +51,7 @@
                                                  (assoc-value song "picUrl")
                                                  url))))))
                            (send-message target "没有搜索到这个歌曲呢!")))
-                     (send-message-text (target-id sender) "参数错误"))))
+                     (send-message-text (target-id sender) "参数错误")))
+             "网易云搜索歌曲 第一个参数为返回的歌曲数量, 剩下的参数是歌曲关键字")
 
 (in-package :cl-user)
