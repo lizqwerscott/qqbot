@@ -6,7 +6,7 @@
       (assoc-value picture "imgurl"))))
 
 (defun save-picture (url)
-  (run-shell (format nil "wget -P ./picture/ ~A" url)))
+  (run-shell (format nil "wget -P ~Apicture/ ~A" (get-source-dir) url)))
 
 ;;tag is list
 (defun get-pixiv-picture (tag)

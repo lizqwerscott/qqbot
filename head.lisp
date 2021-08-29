@@ -48,5 +48,8 @@
     (dolist (line lst)
       (write-line line stream))))
 
+(defun get-source-dir ()
+  (asdf:system-source-directory :qqbot))
+
 (in-package :cl-user)
 

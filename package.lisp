@@ -13,7 +13,8 @@
    :list-directory
    :load-json-file
    :save-json-file
-   :lst-line-string))
+   :lst-line-string
+   :get-source-dir))
 
 (defpackage :qqbot.web
   (:use :common-lisp :drakma :qqbot.head :babel :jonathan)

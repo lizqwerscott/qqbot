@@ -3,7 +3,7 @@
 (defparameter *cards* (make-hash-table :test #'equal))
 
 (defun load-cards ()
-  (dolist (card (list-directory "./cards/"))
+  (dolist (card (list-directory (merge-pathnames "cards/" (get-source-dir))))
     (let ((name (pathname-name card)))
       (setf (gethash name *cards*) (load-json-file card)))))
 

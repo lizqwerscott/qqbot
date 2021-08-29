@@ -38,10 +38,10 @@
     (jonathan:to-json lst :from :alist)))
 
 (defun save-admin ()
-  (save-json-file "./data/admin.json" (sequence-to-json)))
+  (save-json-file (merge-pathnames "data/admin.json" (get-source-dir)) (sequence-to-json)))
 
 (defun load-admin ()
-  (let ((admin (load-json-file "./data/admin.json")))
+  (let ((admin (load-json-file (merge-pathnames "data/admin.json" (get-source-dir)))))
     (mapcar #'(lambda (x)
                 (setf *admin* (make-array 3 :fill-pointer 0 :adjustable 1))
                 (vector-push-extend x *admin*))

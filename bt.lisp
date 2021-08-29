@@ -11,7 +11,7 @@
 
 (defun save (bytes)
   (when bytes
-    (with-open-file (in "./web/search.html" :direction :output :if-exists :supersede :element-type '(unsigned-byte 8))
+    (with-open-file (in (merge-pathnames "web/search.html" (get-source-dir)) :direction :output :if-exists :supersede :element-type '(unsigned-byte 8))
      (when in
        (write-sequence bytes in)))))
 
@@ -23,7 +23,7 @@
   (let ((result (getBt str)))
     (when result
       (save result)
-      (find-movie-url (lquery:$ (initialize (pathname "./web/search.html")))))))
+      (find-movie-url (lquery:$ (initialize (merge-pathnames "web/search.html" (get-source-dir))))))))
 
 (add-command "磁力"
              #'(lambda (sender args)
