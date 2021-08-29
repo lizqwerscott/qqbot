@@ -66,7 +66,7 @@
    :args-type))
 
 (defpackage :qqbot.text
-  (:use :common-lisp :qqbot.bot :qqbot.web)
+  (:use :common-lisp :qqbot.bot :qqbot.web :qqbot.head)
   (:export
    :get-random-text))
 
