@@ -30,6 +30,15 @@
 (defun run-shell (program)
   #+clozure (ccl:run-program "/bin/sh" (list "-c" (format nil "~A" program))))
 
+(defun load-line-file (path)
+  (let ((result))
+    (with-open-file (in path :direction :input
+                             :if-does-not-exist :error)
+      (do ((line (read-line in nil 'eof)
+                 (read-line in nil 'eof)))
+          ((eql line 'eof) result)
+        (setf result (append result (list line)))))))
+
 (defun load-json-file (path)
   (with-open-file (in path :direction :input :if-does-not-exist :error)
     (multiple-value-bind (s) (make-string (file-length in))

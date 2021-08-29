@@ -19,6 +19,10 @@
                (:file "picture")
                (:file "bt")
                (:file "card")
-               (:file "game")
+               (:module "game"
+                :depends-on ("package" "head" "bot")
+                :serial t
+                :components ((:file "els")
+                             (:file "miyu")))
                (:file "song")
                (:file "main")))

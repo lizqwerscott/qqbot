@@ -11,6 +11,7 @@
    :string-merges
    :bits-to-json
    :list-directory
+   :load-line-file
    :load-json-file
    :save-json-file
    :lst-line-string

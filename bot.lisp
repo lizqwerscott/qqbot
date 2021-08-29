@@ -239,7 +239,6 @@
           (setf text (split-s text))
           (maphash #'(lambda (k v)
                        (when (find target (gethash k *command-mode-active-map*))
-                         (format t "Now is ~A mode~%" k)
                          (if (string= "help" (first text))
                              (send-message-text-lst target
                                                     (mapcar #'(lambda (x) (car x)) v))
@@ -247,7 +246,7 @@
                                (when command
                                  (funcall command
                                           (assoc-value message "sender")
-                                          (cdr (cdr text))))))))
+                                          (cdr text)))))))
                    *command-mode-map*)
           (if (string= "陈睿" (first text))
               (if (gethash (second text) *command-map*)

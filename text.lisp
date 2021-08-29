@@ -4,15 +4,8 @@
   (web-get "api.vvhan.com" (format nil "api/~A" command)))
 
 (defun bullet-fly-load ()
-  (let ((result nil))
-    (with-open-file (in (merge-pathnames "data/bullet.txt"
-                                         (get-source-dir)))
-      (when in
-        (do ((line (read-line in nil 'eof)
-                   (read-line in nil 'eof)))
-            ((eql line 'eof))
-          (setf result (append result (list line))))))
-    result))
+  (load-line-file (merge-pathnames "data/bullet.txt"
+                                   (get-source-dir))))
 
 (add-command "笑话"
              #'(lambda (sender args)
