@@ -34,7 +34,7 @@
 (setf *miyu* (load-miyu))
 
 (defun random-miyu ()
-  (elt *miyu* (random-int-r (length *miyu*))))
+  (elt *miyu* (random-int-r (- (length *miyu*) 1))))
 
 (defun get-score (id)
   (let ((members (sort (play-members (gethash id *now-play*))
@@ -59,20 +59,19 @@
   (let ((target (target-id sender)))
     (if (args-type args (list #'symbolp))
         (let ((play (gethash (group-id sender) *now-play*)))
-          (let ((member (find-member play (sender-id sender))))
-            (when (not member)
-              (add-member play
+          (when (not (find-member play (sender-id sender)))
+            (add-member play
                           (sender-id sender)
                           (sender-name sender)))
-            (if (string= (second (play-miyu play)) (car args))
-            (progn
-              (send-message-text target "答对了")
-              (incf (player-score member))
-              (send-message-text target "下一题")
-              (setf (play-miyu (gethash (group-id sender) *now-play*)) (random-miyu))
-              (send-message-text target (first (play-miyu play))))
-            (send-message-text target "答错了,再想一想吧"))))
-        (send-message-text target "参数错误"))))
+          (if (string= (second (play-miyu play)) (car args))
+                (progn
+                  (send-message-text target "答对了")
+                  (incf (player-score (find-member play (sender-id sender))))
+                  (send-message-text target "下一题")
+                  (setf (play-miyu (gethash (group-id sender) *now-play*)) (random-miyu))
+                  (send-message-text target (first (play-miyu play))))
+            (send-message-text target "答错了,再想一想吧")))
+      (send-message-text target "参数错误"))))
 
 (defun q-score (sender args)
   (let ((result (get-score (group-id sender))))
