@@ -27,6 +27,10 @@
 (defpackage :qqbot.bot
   (:use :common-lisp :drakma :qqbot.head :babel :qqbot.web)
   (:export
+   :people
+   :make-people
+   :people-id
+   :people-name
    :get-master
    :is-master
    :add-admin
@@ -45,6 +49,7 @@
    :gmessage-picture
    :send-message
    :send-message-text
+   :send-message-text-lst
    :send-picture
    :send-music-share
    :send-json

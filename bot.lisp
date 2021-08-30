@@ -150,13 +150,17 @@
 (defun sender-groupp (sender)
   (assoc-value sender "group"))
 
+(defstruct people
+  id
+  name)
+
 (defun sender-id (sender)
   (assoc-value sender "id"))
 
 (defun sender-name (sender)
   (if (sender-groupp sender)
-      (assoc-value sender "nickName")
-      (assoc-value sender "memberName")))
+      (assoc-value sender "memberName")
+      (assoc-value sender "nickName")))
 
 (defun group-id (sender)
   (assoc-value (sender-groupp sender) "id"))
