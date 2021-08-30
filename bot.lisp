@@ -11,6 +11,37 @@
 (defparameter *command-mode-map* (make-hash-table :test #'equal))
 (defparameter *command-mode-active-map* (make-hash-table :test #'equal))
 
+(defparameter *is-repeat* t)
+(defparameter *repeat-command* nil)
+
+(defun load-repeat ()
+  (setf *repeat-command* (load-json-file (merge-pathnames "data/repeat.json" (get-source-dir)))))
+
+(load-repeat)
+
+(defun save-repeat ()
+  (save-json-file (merge-pathnames "data/repeat.json" (get-source-dir))
+                  (jonathan:to-json *repeat-command* :from :alist)))
+
+(defun add-repeat (repeat)
+  (setf *repeat-command* (append *repeat-command* (list repeat)))
+  (save-repeat))
+
+(defun remove-repeat (repeat-f)
+  (setf *repeat-command* (remove repeat-f *repeat-command*
+                                 :key #'(lambda (x)
+                                          (car x))
+                                 :test #'string=))
+  (save-repeat))
+
+(defun list-repeat ())
+
+(defun active-repeat ()
+  (setf *is-repeat* t))
+
+(defun deactive-repeat ()
+  (setf *is-repeat* nil))
+
 (defparameter *help-map* (make-hash-table :test #'equal))
 
 (defun get-master ()
@@ -241,6 +272,10 @@
     (if (stringp text)
         (progn
           (setf text (split-s text))
+          (when *is-repeat*
+            (let ((repeat (assoc-value *repeat-command* (first text))))
+              (when repeat
+                (send-message-text target repeat))))
           (maphash #'(lambda (k v)
                        (when (find target (gethash k *command-mode-active-map*))
                          (if (string= "help" (first text))
@@ -286,6 +321,34 @@
                              (send-message-text target
                                                 (lst-line-string commands)))))
                      (send-message-text (target-id sender) "参数不对"))))
+
+(add-command "添加回复"
+             #'(lambda (sender args)
+                 (let ((target (target-id sender)))
+                   (if (args-type args (list #'symbolp #'symbolp))
+                       (progn
+                         (add-repeat `(,(first args) . ,(second args)))
+                         (send-message-text target "成功"))
+                       (send-message-text target "参数错误"))))
+             "第一个参数为你说的,第二个参数为机器人回复的")
+
+(add-command "删除回复"
+             #'(lambda (sender args)
+                 (let ((target (target-id sender)))
+                   (if (args-type args (list #'symbolp))
+                       (progn
+                         (remove-repeat (first args))
+                         (send-message-text target "成功"))
+                       (send-message-text target "参数错误"))))
+             "第一个参数为你说的")
+
+(add-command "列出回复"
+             #'(lambda (sender args)
+                 (let ((target (target-id sender)))
+                   (let ((repeats (mapcar #'(lambda (x)
+                                              (format nil "~A:~A" (car x) (cdr x)))
+                                          *repeat-command*)))
+                     (send-message-text-lst target repeats)))))
 
 (defun run ()
   (do ()
