@@ -104,5 +104,5 @@
   (:use :common-lisp :qqbot.bot :qqbot.head :qqbot.web))
 
 (defpackage :qqbot
-  (:use :common-lisp :qqbot.head :qqbot.bot :bordeaux-threads)
+  (:use :common-lisp :qqbot.head :qqbot.bot :bordeaux-threads :qqbot.card)
   (:export :start))
