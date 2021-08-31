@@ -44,8 +44,12 @@
              #'(lambda (sender args)
                  (let ((target (target-id sender)))
                    (let ((code (string-merges args " ")))
-                     (format t "handle-code-right:~A~%" code)
-                     (send-message-text target (handle-code code))))))
+                     (if (or (is-master (sender-id sender))
+                             (is-admin (sender-id sender)))
+                         (progn
+                           (format t "handle-code-right:~A~%" code)
+                           (send-message-text target (handle-code code)))
+                         (send-message-text target "你没有权限!"))))))
 
 (defun start ()
   (verify)
