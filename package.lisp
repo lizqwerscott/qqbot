@@ -84,7 +84,7 @@
    :get-pixiv-pictures))
 
 (defpackage :qqbot.bt
-  (:use :common-lisp :qqbot.bot :drakma)
+  (:use :common-lisp :qqbot.bot :drakma :qqbot.head)
   (:export
    :searchBt))
 
