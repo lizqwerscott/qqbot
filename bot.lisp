@@ -100,8 +100,7 @@
   (let ((message (send-command-post "verify"
                                     `(("verifyKey" . ,key)))))
     (setf *session* (assoc-value message "session"))
-    (if (not *session*)
-	(error "session get error"))))
+    *session*))
 
 (defun bind (&optional (qq-id 3027736450))
   (send-command-post "bind"
