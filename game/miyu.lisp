@@ -81,7 +81,7 @@
                   (send-text target "答对了")
                   (incf (player-score (find-member play (sender-id sender))))
                   (send-text target "下一题")
-                  (send-text target (next-miyu)))
+                  (send-text target (next-miyu (group-id sender))))
             (send-text target "答错了,再想一想吧")))
       (send-text target "参数错误"))))
 
