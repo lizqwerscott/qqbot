@@ -66,6 +66,7 @@
   (format t "connect finish~%")
   (bind)
   (get-group-list)
+  (send-message-text (get-master) "机器人启动完成")
   (bt:make-thread #'run))
 
 (in-package :cl-user)
