@@ -47,6 +47,15 @@
                                                 (player-score (elt members i)))))))
     result))
 
+(defun now-miyu (group)
+  (first (play-miyu (gethash group *now-play*))))
+
+(defun now-daan (group)
+  (second (play-miyu (gethash group *now-play*))))
+
+(defun next-miyu (group)
+  (first (setf (play-miyu (gethash group *now-play*)) (random-miyu))))
+
 (defun q-exit (sender args)
   (send-text-lst (target-id sender)
                          (append (list "分数:") (get-score (group-id sender))))
@@ -55,32 +64,53 @@
   (setf (gethash (group-id sender) *now-play*) nil)
   (deactive-mode "谜语" (group-id sender)))
 
+(defun q-timu (sender args)
+  (let ((target (target-id sender)))
+    (send-text target (now-miyu (group-id sender)))))
+
 (defun q-cai (sender args)
   (let ((target (target-id sender)))
     (if (args-type args (list #'symbolp))
         (let ((play (gethash (group-id sender) *now-play*)))
           (when (not (find-member play (sender-id sender)))
             (add-member play
-                          (sender-id sender)
-                          (sender-name sender)))
+                        (sender-id sender)
+                        (sender-name sender)))
           (if (string= (second (play-miyu play)) (car args))
                 (progn
                   (send-text target "答对了")
                   (incf (player-score (find-member play (sender-id sender))))
                   (send-text target "下一题")
-                  (setf (play-miyu (gethash (group-id sender) *now-play*)) (random-miyu))
-                  (send-text target (first (play-miyu play))))
+                  (send-text target (next-miyu)))
             (send-text target "答错了,再想一想吧")))
       (send-text target "参数错误"))))
 
+(defun q-daan (sender args)
+  (let ((target (target-id sender)))
+    (let ((play (gethash (group-id sender) *now-play*)))
+      (send-text target "扣除一分")
+      (send-text target (format nil "谜底:~A" (now-daan (group-id sender))))
+      (when (not (find-member play (sender-id sender)))
+        (add-member play
+                    (sender-id sender)
+                    (sender-name sender)))
+      (decf (player-score (find-member play (sender-id sender))))
+      (send-text target "真是屑,连这么简单的题都不会>_<")
+      (send-text target "下一题")
+      (send-text target (next-miyu (group-id sender))))))
+
 (defun q-score (sender args)
-  (let ((result (get-score (group-id sender))))
-    (send-text-lst (target-id sender) result)))
+    (let ((result (get-score (group-id sender))))
+      (if result
+          (send-text-lst (target-id sender) result)
+          (send-text (target-id sender) "没人猜过, 所以没有分数"))))
 
 (let ((func-lst))
   (let ((add-lst #'(lambda (str func)
                      (setf func-lst (append func-lst (list `(,str . ,func)))))))
     (funcall add-lst "猜" #'q-cai)
+    (funcall add-lst "答案" #'q-daan)
+    (funcall add-lst "题目" #'q-timu)
     (funcall add-lst "分数" #'q-score)
     (funcall add-lst "exit" #'q-exit))
   (add-mode-command "谜语" func-lst))
