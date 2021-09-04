@@ -51,7 +51,7 @@
                                                  (assoc-value song "picUrl")
                                                  url))))))
                            (send-message target "没有搜索到这个歌曲呢!")))
-                     (send-message-text (target-id sender) "参数错误")))
+                     (send-text (target-id sender) "参数错误")))
              "网易云搜索歌曲 第一个参数为返回的歌曲数量, 剩下的参数是歌曲关键字")
 
 (in-package :cl-user)

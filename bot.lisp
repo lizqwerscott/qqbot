@@ -162,10 +162,10 @@
                          ("target" . ,target)
                          ("messageChain" . ,message-chain)))))
 
-(defun send-message-text (target str)
+(defun send-text (target str)
   (send-message target `(,(gmessage-text str))))
 
-(defun send-message-text-lst (target texts)
+(defun send-text-lst (target texts)
   (send-message target `(,(gmessage-text (lst-line-string texts)))))
 
 (defun send-picture (target url)
@@ -274,11 +274,11 @@
           (when *is-repeat*
             (let ((repeat (assoc-value *repeat-command* (first text))))
               (when repeat
-                (send-message-text target repeat))))
+                (send-text target repeat))))
           (maphash #'(lambda (k v)
                        (when (find target (gethash k *command-mode-active-map*))
                          (if (string= "help" (first text))
-                             (send-message-text-lst target
+                             (send-text-lst target
                                                     (mapcar #'(lambda (x) (car x)) v))
                              (let ((command (assoc-value v (first text))))
                                (when command
@@ -291,7 +291,7 @@
                   (funcall (gethash (second text) *command-map*)
                            (assoc-value message "sender")
                            (cdr (cdr text)))
-                  (send-message-text target "没有这个命令哟!"))))
+                  (send-text target "没有这个命令哟!"))))
         (format t "text is null~%"))))
 
 (defun get-all-command ()
@@ -312,14 +312,14 @@
                            (if (find command commands :test #'string=)
                                (let ((help (gethash command *help-map*)))
                                  (if help
-                                     (send-message-text target help)
-                                     (send-message-text target "这个命令没有帮助,这么简单的命令还需要看帮助,你真是太弱了")))
-                               (send-message-text target "没有这个命令, 你可以用 陈睿 help 来获取所以命令"))
+                                     (send-text target help)
+                                     (send-text target "这个命令没有帮助,这么简单的命令还需要看帮助,你真是太弱了")))
+                               (send-text target "没有这个命令, 你可以用 陈睿 help 来获取所以命令"))
                            (progn
-                             (send-message-text target "命令的使用方法 陈睿 命令 参数1 参数2,所有命令后面的参数以空格分割, help 后面加命令的名字获取每条命令详细帮助")
-                             (send-message-text target
+                             (send-text target "命令的使用方法 陈睿 命令 参数1 参数2,所有命令后面的参数以空格分割, help 后面加命令的名字获取每条命令详细帮助")
+                             (send-text target
                                                 (lst-line-string commands)))))
-                     (send-message-text (target-id sender) "参数不对"))))
+                     (send-text (target-id sender) "参数不对"))))
 
 (add-command "添加回复"
              #'(lambda (sender args)
@@ -327,8 +327,8 @@
                    (if (args-type args (list #'symbolp #'symbolp))
                        (progn
                          (add-repeat `(,(first args) . ,(second args)))
-                         (send-message-text target "成功"))
-                       (send-message-text target "参数错误"))))
+                         (send-text target "成功"))
+                       (send-text target "参数错误"))))
              "第一个参数为你说的,第二个参数为机器人回复的")
 
 (add-command "删除回复"
@@ -337,8 +337,8 @@
                    (if (args-type args (list #'symbolp))
                        (progn
                          (remove-repeat (first args))
-                         (send-message-text target "成功"))
-                       (send-message-text target "参数错误"))))
+                         (send-text target "成功"))
+                       (send-text target "参数错误"))))
              "第一个参数为你说的")
 
 (add-command "列出回复"
@@ -347,7 +347,7 @@
                    (let ((repeats (mapcar #'(lambda (x)
                                               (format nil "~A:~A" (car x) (cdr x)))
                                           *repeat-command*)))
-                     (send-message-text-lst target repeats)))))
+                     (send-text-lst target repeats)))))
 
 (defun run ()
   (do ()

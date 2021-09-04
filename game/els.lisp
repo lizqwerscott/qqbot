@@ -94,9 +94,9 @@
         (if (equal :match (r-status play))
             (progn
               (join (group-id sender) (sender-id sender))
-              (send-message-text target "您已经加入")
+              (send-text target "您已经加入")
               (list-player (group-id sender)))
-            (send-message-text target "对局已经开始"))))))
+            (send-text target "对局已经开始"))))))
 
 (defun q-start (sender args)
   (let ((target (target-id sender)))
@@ -104,9 +104,9 @@
       (if play
           (progn
             (setf (r-status play) :start)
-            (send-message-text target "对局开始.")
-            (send-message-text target "请创建者使用shoot开始游戏"))
-          (send-message-text target "没有对局")))))
+            (send-text target "对局开始.")
+            (send-text target "请创建者使用shoot开始游戏"))
+          (send-text target "没有对局")))))
 
 (defun q-shoot (sender args)
   (let ((target (target-id sender))
@@ -114,28 +114,28 @@
     (if (and play (equal :start (r-status play)))
         (if (= (sender-id sender) (elt (r-player play) (r-run play)))
             (progn
-              (send-message-text target "蹦...")
+              (send-text target "蹦...")
               (if (shoot play)
                   (progn
-                    (send-message-text target "你死了")
+                    (send-text target "你死了")
                     (mute-group-member (group-id sender)
                                        (sender-id sender) 60))
-                  (send-message-text target "你活下来了"))
-              (send-message-text target (format nil "现在还有~A颗子弹" (r-bullet play)))
-              (send-message-text target (format nil "现在还有~A" (r-rplace play)))
+                  (send-text target "你活下来了"))
+              (send-text target (format nil "现在还有~A颗子弹" (r-bullet play)))
+              (send-text target (format nil "现在还有~A" (r-rplace play)))
               (if (or (= 1 (length (r-player play))) (= 0 (r-bullet play)))
                   (progn
                     (dolist (i (win-player play))
-                      (send-message-text target (format nil "获胜者:~A" i)))
-                    (send-message-text target "游戏结束")
+                      (send-text target (format nil "获胜者:~A" i)))
+                    (send-text target "游戏结束")
                     (finish (group-id sender)))
                   (progn
                     (next-player play)
                     (next-place play)
-                    (send-message-text target
+                    (send-text target
                                        (format nil "现在请~A" (get-run-player play))))))
-            (send-message-text target "现在是其他人开枪的时候."))
-        (send-message-text target "没有对局或者对局处于匹配中"))))
+            (send-text target "现在是其他人开枪的时候."))
+        (send-text target "没有对局或者对局处于匹配中"))))
 
 (defun q-exit (sender args)
   (let ((target (target-id sender))
@@ -144,9 +144,9 @@
         (if (find (sender-id sender) (r-player play))
             (progn
               (finish (group-id sender))
-              (send-message-text target "对局已退出"))
-            (send-message-text target "你没有权限"))
-        (send-message-text target "本群没有对局"))))
+              (send-text target "对局已退出"))
+            (send-text target "你没有权限"))
+        (send-text target "本群没有对局"))))
 
 (let ((func-lst))
   (let ((add-lst #'(lambda (str func)
@@ -167,9 +167,9 @@
                                (format t "~A,~A~%" (first args) (second args))
                                (create (group-id sender) (sender-id sender) (parse-integer (first args)) (parse-integer (second args)))
                                (active-mode "俄罗斯轮盘" (group-id sender))
-                               (send-message-text target "对局已经创建, 请其他人使用join加入对局"))
-                             (send-message-text target "本群正在进行对局或匹配中"))))
-                     (send-message-text (target-id sender) "参数错误")))
+                               (send-text target "对局已经创建, 请其他人使用join加入对局"))
+                             (send-text target "本群正在进行对局或匹配中"))))
+                     (send-text (target-id sender) "参数错误")))
              "开启一局俄罗斯轮盘, 规则为先进行匹配,然后输入 start开始游戏, 创建游戏的人用shoot先开枪,后面第一个参数为枪有多少个子弹位置, 第二个参数为有多少颗子弹")
 
 (in-package :cl-user)

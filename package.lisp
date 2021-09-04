@@ -48,8 +48,8 @@
    :gmessage-text
    :gmessage-picture
    :send-message
-   :send-message-text
-   :send-message-text-lst
+   :send-text
+   :send-text-lst
    :send-picture
    :send-music-share
    :send-json

@@ -83,12 +83,12 @@
                            (card (car args)))
                        (format t "card:~A~%" card)
                        (if (find card (list-cards) :test #'string=)
-                           (send-message-text target (draw-card card))
+                           (send-text target (draw-card card))
                            (progn
-                             (send-message-text target "你要的卡堆不存在....请重新选择吧")
-                             (send-message-text target
+                             (send-text target "你要的卡堆不存在....请重新选择吧")
+                             (send-text target
                                                 (lst-line-string (list-cards))))))
-                     (send-message-text (target-id sender) "参数错误")))
+                     (send-text (target-id sender) "参数错误")))
              (let ((help nil))
                (setf help (append help (list "第一个参数为要抽的卡堆." "接下来是卡堆列表")))
                (setf help (append help (list-cards)))

@@ -48,7 +48,7 @@
                    (if (args-type args (list #'numberp #'symbolp))
                        (if (<= (parse-integer (car args)) 10)
                            (progn
-                             (send-message-text target "p站搜索中。。。")
+                             (send-text target "p站搜索中。。。")
                              (let ((pictures (get-pixiv-pictures (parse-integer (car args)) (cdr args))))
                                (if pictures
                                    (dolist (picture pictures)
@@ -58,9 +58,9 @@
                                                    `(,(gmessage-text (format nil "pid:~A" (car picture)))
                                                      ,(gmessage-text (format nil "url:~A" (second picture)))
                                                      ,(gmessage-picture (second picture)))))
-                                   (send-message-text target "震惊,居然一张都没有找到!!!!"))))
-                           (send-message-text target "请求的太多了。。。请少点啦!!!!"))
-                       (send-message-text target "参数错误"))))
+                                   (send-text target "震惊,居然一张都没有找到!!!!"))))
+                           (send-text target "请求的太多了。。。请少点啦!!!!"))
+                       (send-text target "参数错误"))))
              "从p站获取色图(大部分为萝莉),第一个参数为要几张色图, 后面参数为要找的图片类型")
 
 (in-package :cl-user)
