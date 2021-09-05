@@ -57,8 +57,10 @@
                          (let ((miyans (random-lst *mi-yan*)))
                            (let ((miyan (random-lst (cdr miyans))))
                              (if (listp miyan)
-                                 (send-text-lst target miyan)
-                                 (send-text target miyan)))))
+                                 (progn
+                                   (send-text target (car miyans))
+                                   (send-text-lst target miyan))
+                                 (send-text target (format nil "~A --~A" miyan (car miyans)))))))
                        (send-text target "参数错误, 例子:陈睿 名言 2 或者 陈睿 名言")))))
 
 (add-command "名言人物"
