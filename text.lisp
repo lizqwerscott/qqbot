@@ -76,8 +76,8 @@
                              (dolist (i key)
                                (sleep 1)
                                (if (listp i)
-                                   (send-text-lst target i
-                                                  (send-text target i))))
+                                   (send-text-lst target i)
+                                   (send-text target i)))
                              (send-text target "没有找到这个人呢!")))
                        (send-text target "参数错误, 例子:陈睿 人物名言 缘之空")))))
 
