@@ -94,7 +94,7 @@
 (defun parse-data (message)
   (if message
       (if (= 0 (assoc-value message "code")) message
-          (format t "error: ~A~%" (assoc-value message "msg")))
+          (format t "error:id:~A {msg: ~A}~%" (assoc-value message "code") (assoc-value message "msg")))
       (format t "command error~%")))
 
 (defun send-command-post (command args)
