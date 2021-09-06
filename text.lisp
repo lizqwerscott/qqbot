@@ -19,6 +19,9 @@
 (defun get-random-text (command)
   (web-get "api.vvhan.com" (format nil "api/~A" command)))
 
+(defun get-random-sici (fenlei)
+  (web-get "v1.jinrishici.com" fenlei :jsonp t))
+
 (defun bullet-fly-load ()
   (load-line-file (merge-pathnames "data/bullet.txt"
                                    (get-source-dir))))
@@ -80,5 +83,15 @@
                                    (send-text target i)))
                              (send-text target "没有找到这个人呢!")))
                        (send-text target "参数错误, 例子:陈睿 人物名言 缘之空")))))
+
+(add-command "来句诗"
+             #'(lambda (sender args)
+                 (let ((target (target-id sender)))
+                   (let ((siju (get-random-sici "all")))
+                     (format t "类型:~A~%" (assoc-value siju "category"))
+                     (send-text target (assoc-value siju "content"))
+                     (send-text-lst target (list (format nil "类型:~A" (assoc-value siju "category"))
+                                                 (format nil "来自:~A" (assoc-value siju "origin"))
+                                                 (format nil "作者:~A" (assoc-value siju "author"))))))))
 
 (in-package :cl-user)

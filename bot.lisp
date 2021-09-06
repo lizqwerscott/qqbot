@@ -90,10 +90,10 @@
       (format t "command error~%")))
 
 (defun send-command-post (command args)
-  (parse-data (web-post "192.168.3.3:8080" command args :jsonp t)))
+  (parse-data (web-post "192.168.3.3:8080" command :args args :jsonp t)))
 
 (defun send-command-get (command args)
-  (parse-data (web-get "192.168.3.3:8080" command args :jsonp t)))
+  (parse-data (web-get "192.168.3.3:8080" command :args args :jsonp t)))
 
 
 (defun verify (&optional (key "12138"))

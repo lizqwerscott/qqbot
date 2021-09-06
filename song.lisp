@@ -26,7 +26,7 @@
               songs)))
 
 (defun get-mp3 (id)
-  (parse-data (web-get "127.0.0.1:3000" "song/url" `(("id" . ,id)) :jsonp t) "data"))
+  (parse-data (web-get "127.0.0.1:3000" "song/url" :args `(("id" . ,id)) :jsonp t) "data"))
 
 (defun get-url (mp3)
   (list (assoc-value mp3 "url")))

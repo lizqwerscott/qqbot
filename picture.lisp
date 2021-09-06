@@ -1,7 +1,8 @@
 (in-package :qqbot.picture)
 
 (defun get-random-picture ()
-  (let ((picture (web-get "api.vvhan.com" "api/acgimg" '(("type" . "json")) :jsonp t)))
+  (let ((picture (web-get "api.vvhan.com" "api/acgimg"
+                          :args '(("type" . "json")) :jsonp t)))
     (when (assoc-value picture "success")
       (assoc-value picture "imgurl"))))
 
@@ -11,11 +12,14 @@
 ;;tag is list
 (defun get-pixiv-picture (tag)
   (handler-case
-      (let ((picture (web-post "api.lolicon.app" "setu/v2" `(("r18" . 1)
-                                                             ("num" . 1)
-                                                             ("size" . "original")
-                                                             ("proxy" . nil)
-                                                             ("tag" . ,tag)) :jsonp t)))
+      (let ((picture (web-post "api.lolicon.app"
+                               "setu/v2"
+                               :args `(("r18" . 1)
+                                       ("num" . 1)
+                                       ("size" . "original")
+                                       ("proxy" . nil)
+                                       ("tag" . ,tag))
+                               :jsonp t)))
     (format t "~A~%" picture)
     (if (string= "" (assoc-value picture "error"))
         (list (assoc-value (car (assoc-value picture "data")) "pid")
