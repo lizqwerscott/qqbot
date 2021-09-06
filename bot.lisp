@@ -14,6 +14,14 @@
 (defparameter *is-repeat* t)
 (defparameter *repeat-command* nil)
 
+(defstruct people
+  id
+  name)
+
+(defstruct qq-group
+  id
+  name)
+
 (defun load-repeat ()
   (setf *repeat-command* (load-json-file (merge-pathnames "data/repeat.json" (get-source-dir)))))
 
@@ -128,10 +136,12 @@
 (defun get-group-list ()
   (let ((message (send-command-get "groupList"
                                    `(("sessionKey" . ,*session*)))))
-    (if message
-	(dolist (i (assoc-value message "data"))
-	  (vector-push-extend (assoc-value i "id")
-			      *group-list*)))))
+    (when message
+      (setf *group-list* (make-array 3 :fill-pointer 0 :adjustable t))
+      (dolist (i (assoc-value message "data"))
+        (vector-push-extend (make-qq-group :id (assoc-value i "id")
+                                           :name (assoc-value i "name"))
+                            *group-list*)))))
 
 (defun gmessage-text (text)
   `(("type" . "Plain")
@@ -180,9 +190,6 @@
 (defun sender-groupp (sender)
   (assoc-value sender "group"))
 
-(defstruct people
-  id
-  name)
 
 (defun sender-id (sender)
   (assoc-value sender "id"))
@@ -348,6 +355,18 @@
                                               (format nil "~A:~A" (car x) (cdr x)))
                                           *repeat-command*)))
                      (send-text-lst target repeats)))))
+
+(add-command "列出群聊"
+             #'(lambda (sender args)
+                 (let ((target (target-id sender)))
+                   (get-group-list)
+                   (let ((result nil))
+                     (dotimes (i (length *group-list*))
+                       (setf result (append result
+                                            (list (format nil "~A:~A ~A" i
+                                                          (qq-group-id (elt *group-list* i))
+                                                          (qq-group-name (elt *group-list* i)))))))
+                     (send-text-lst target result)))))
 
 (defun run ()
   (do ()
