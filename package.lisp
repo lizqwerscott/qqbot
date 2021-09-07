@@ -42,6 +42,7 @@
    :load-admin
 
    :get-group-list
+   :get-group-member
 
    :verify :bind :release
    :mute-group-member

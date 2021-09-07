@@ -143,6 +143,11 @@
                                            :name (assoc-value i "name"))
                             *group-list*)))))
 
+(defun get-group-member (target)
+  (send-command-get "memberList"
+                    `(("sessionKey" . ,*session*)
+                      ("target" . ,target))))
+
 (defun gmessage-text (text)
   `(("type" . "Plain")
     ("text" . ,text)))
@@ -166,11 +171,18 @@
     ("json" . ,json)))
 
 (defun send-message (target message-chain)
-  (let ((command (if (find target *group-list*) "sendGroupMessage" "sendFriendMessage")))
+  (let ((command (if (find target *group-list* :key #'qq-group-id) "sendGroupMessage" "sendFriendMessage")))
     (send-command-post command
                        `(("sessionKey" . ,*session*)
                          ("target" . ,target)
                          ("messageChain" . ,message-chain)))))
+
+(defun send-nudge (target group)
+  (send-command-post "sendNudge"
+                     `(("sessionKey" . ,*session*)
+                       ("target" . ,target)
+                       ("subject" . ,group)
+                       ("kind" . "group"))))
 
 (defun send-text (target str)
   (send-message target `(,(gmessage-text str))))
@@ -189,7 +201,6 @@
 
 (defun sender-groupp (sender)
   (assoc-value sender "group"))
-
 
 (defun sender-id (sender)
   (assoc-value sender "id"))
@@ -367,6 +378,16 @@
                                                           (qq-group-id (elt *group-list* i))
                                                           (qq-group-name (elt *group-list* i)))))))
                      (send-text-lst target result)))))
+
+(add-command "戳一戳"
+             #'(lambda (sender args)
+                 (let ((target (target-id sender)))
+                   (if (args-type args (list #'numberp #'numberp #'numberp))
+                       (dotimes (i (parse-integer (third args)))
+                         (sleep 1)
+                         (send-nudge (parse-integer (first args))
+                                     (qq-group-id (elt *group-list* (parse-integer (second args))))))
+                       (send-text target "参数错误, 第一个参数为 发的qq号, 第二个为在那个群, 第三个为几次 (最多3次)示列:陈睿 1963771277 0 5")))))
 
 (defun run ()
   (do ()
