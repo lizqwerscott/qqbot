@@ -9,6 +9,7 @@
    :split-s
    :string-merge
    :string-merges
+   :string-include
    :bits-to-json
    :list-directory
    :load-line-file

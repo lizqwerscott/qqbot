@@ -21,6 +21,15 @@
       (string-merges (cdr lst) deleimiter (string-merge result (car lst) deleimiter))
       result))
 
+(defun string-include (str include)
+  (when (and (stringp str) (stringp include) (>= (length str) (length include)))
+    (let ((result nil))
+      (dotimes (i (- (+ 1 (length str)) (length include)))
+        (when (not result)
+          (when (string= include (subseq str i (+ i (length include))))
+            (setf result t))))
+      result)))
+
 (defun bits-to-json (bits)
   (jonathan:parse (babel:octets-to-string bits) :as :alist))
 

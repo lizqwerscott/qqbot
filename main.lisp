@@ -62,7 +62,7 @@
         (error (c)
           (format t "error:~A~%" c)
           (setf runp t)))
-      (sleep 10)))
+      (sleep 3)))
   (format t "connect finish~%")
   (bind)
   (get-group-list)
