@@ -26,6 +26,10 @@
   (load-line-file (merge-pathnames "data/bullet.txt"
                                    (get-source-dir))))
 
+(defun two-bread ()
+  (load-line-file (merge-pathnames "data/twobread.txt"
+                                   (get-source-dir))))
+
 (add-command "笑话"
              #'(lambda (sender args)
                  (send-text (target-id sender)
@@ -47,6 +51,12 @@
 (add-command "让子弹飞一会"
              #'(lambda (sender args)
                  (dolist (line (bullet-fly-load))
+                   (sleep 1)
+                   (send-text (target-id sender) line))))
+
+(add-command "我们联合"
+             #'(lambda (sender args)
+                 (dolist (line (two-bread))
                    (sleep 1)
                    (send-text (target-id sender) line))))
 
