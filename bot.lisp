@@ -383,10 +383,13 @@
              #'(lambda (sender args)
                  (let ((target (target-id sender)))
                    (if (args-type args (list #'numberp #'numberp #'numberp))
-                       (dotimes (i (parse-integer (third args)))
-                         (sleep 1)
-                         (send-nudge (parse-integer (first args))
-                                     (qq-group-id (elt *group-list* (parse-integer (second args))))))
+                       (let ((group (elt *group-list* (parse-integer (second args)))))
+                         (if group
+                             (dotimes (i (parse-integer (third args)))
+                               (sleep 1)
+                               (send-nudge (parse-integer (first args))
+                                           (qq-group-id group)))
+                             (send-text target "群号请写列出群聊的编号")))
                        (send-text target "参数错误, 第一个参数为 发的qq号, 第二个为在那个群, 第三个为几次 (最多3次)示列:陈睿 1963771277 0 5")))))
 
 (defun run ()
