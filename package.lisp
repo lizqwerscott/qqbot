@@ -105,6 +105,15 @@
 (defpackage :qqbot.song
   (:use :common-lisp :qqbot.bot :qqbot.head :qqbot.web))
 
+(defpackage :qqbot.task
+  (:use :common-lisp :qqbot.bot :qqbot.head :bordeaux-threads)
+  (:export
+   :task-runp
+   :add-task
+   :remove-task
+   :start-task
+   :stop-task))
+
 (defpackage :qqbot
-  (:use :common-lisp :qqbot.head :qqbot.bot :bordeaux-threads :qqbot.card)
+  (:use :common-lisp :qqbot.head :qqbot.bot :bordeaux-threads :qqbot.card :qqbot.task :local-time)
   (:export :start))

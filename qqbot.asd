@@ -4,6 +4,7 @@
                :babel
                :jonathan
                :bordeaux-threads
+               :local-time
                :purl
                :lquery
                :plump
@@ -25,4 +26,5 @@
                 :components ((:file "els")
                              (:file "miyu")))
                (:file "song")
+               (:file "task")
                (:file "main")))

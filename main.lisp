@@ -51,6 +51,12 @@
                            (send-text target (handle-code code)))
                          (send-text target "你没有权限!"))))))
 
+(add-task #'(lambda (task)
+              (run-shell "~/shutdown.py"))
+          "shutdown")
+
+(start-task "shutdown")
+
 (defun start ()
   (let ((runp t))
     (do ()
