@@ -52,6 +52,7 @@
                          (send-text target "你没有权限!"))))))
 
 (add-task #'(lambda (task)
+              (sleep 2)
               (run-shell "~/shutdown.py"))
           "shutdown")
 
