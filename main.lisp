@@ -52,16 +52,20 @@
                          (send-text target "你没有权限!"))))))
 
 (defun get-time (hour minute)
-  (let ((today-t (today)))
+  (let ((today-t (now)))
+    (make-timestamp )
     (encode-timestamp 0 0 minute hour
                       (timestamp-day today-t)
                       (timestamp-month today-t)
                       (timestamp-year today-t))))
 
+(defun is-close ()
+  (> (timestamp-to-universal (now))
+     (timestamp-to-universal (get-time 23 00))))
+
 (add-task #'(lambda (task)
               (sleep 2)
-              (when (> (timestamp-to-universal (now))
-                       (timestamp-to-universal (get-time 23 00)))
+              (when (is-close)
                 (run-shell "~/shutdown.py")))
           "shutdown")
 
