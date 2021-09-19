@@ -76,7 +76,8 @@
 (add-command "qr"
              #'(lambda (sender args)
                  (let ((target (target-id sender)))
-                   (if (args-type args (list #'symbolp))
+                   (format t "text:~A~%" (car args))
+                   (if (car args)
                        (send-local-picture target (qr-generate (car args)))
                        (send-text target "参数错误, 例子:陈睿 qr hello")))))
 
