@@ -69,5 +69,15 @@
 (defun get-source-dir ()
   (asdf:system-source-directory :qqbot))
 
+(defun save-l-picture (bits path)
+  (with-open-file (out path
+                       :direction :output
+                       :element-type '(unsigned-byte 8)
+                       :if-exists :overwrite
+                       :if-does-not-exist :create)
+    (when out
+      (write-sequence bits out)))
+  path)
+
 (in-package :cl-user)
 

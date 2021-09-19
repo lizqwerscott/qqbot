@@ -16,7 +16,8 @@
    :load-json-file
    :save-json-file
    :lst-line-string
-   :get-source-dir))
+   :get-source-dir
+   :save-l-picture))
 
 (defpackage :qqbot.web
   (:use :common-lisp :drakma :qqbot.head :babel :jonathan)
@@ -53,6 +54,7 @@
    :send-text
    :send-text-lst
    :send-picture
+   :send-local-picture
    :send-music-share
    :send-json
    :sender-groupp
@@ -79,7 +81,7 @@
    :get-random-text))
 
 (defpackage :qqbot.picture
-  (:use :common-lisp :qqbot.bot :qqbot.head :qqbot.web)
+  (:use :common-lisp :qqbot.bot :qqbot.head :qqbot.web :drakma)
   (:export
    :get-random-picture
    :save-picture

@@ -69,7 +69,7 @@
                 (run-shell "~/shutdown.py")))
           "shutdown")
 
-(start-task "shutdown")
+;;(start-task "shutdown")
 
 (defun start ()
   (let ((runp t))

@@ -38,6 +38,13 @@
             (setf pictures (append pictures (list picture))))))
     pictures))
 
+(defun qr-generate (text)
+  (let ((qr (http-request (generate-url "api.vvhan.com"
+                                        "api/qr"
+                                        `(("text" . ,text)))
+                          :method :get)))
+    (save-l-picture qr (format nil "~Apicture/qr.jpg" (get-source-dir)))))
+
 (add-command "二次元图片"
              #'(lambda (sender args)
                  (let ((url (get-random-picture)))
@@ -61,10 +68,16 @@
                                      (send-message target
                                                    `(,(gmessage-text (format nil "pid:~A" (car picture)))
                                                      ,(gmessage-text (format nil "url:~A" (second picture)))
-                                                     ,(gmessage-picture (second picture)))))
-                                   (send-text target "震惊,居然一张都没有找到!!!!"))))
+                                                     ,(gmessage-picture (second picture))))) (send-text target "震惊,居然一张都没有找到!!!!"))))
                            (send-text target "请求的太多了。。。请少点啦!!!!"))
                        (send-text target "参数错误"))))
              "从p站获取色图(大部分为萝莉),第一个参数为要几张色图, 后面参数为要找的图片类型")
+
+(add-command "qr"
+             #'(lambda (sender args)
+                 (let ((target (target-id sender)))
+                   (if (args-type args (list #'symbolp))
+                       (send-local-picture target (qr-generate (car args)))
+                       (send-text target "参数错误, 例子:陈睿 qr hello")))))
 
 (in-package :cl-user)

@@ -156,6 +156,10 @@
   `(("type" . "Image")
     ("url" . ,url)))
 
+(defun gmessage-local-picture (path)
+  `(("type" . "Image")
+    ("path" . ,path)))
+
 (defun gmessage-music-share (title summary jumpurl pictureurl musicurl brief)
   `(("type" . "MusicShare")
     ("kind" . "NeteaseCloudMusic")
@@ -192,6 +196,9 @@
 
 (defun send-picture (target url)
   (send-message target `(,(gmessage-picture url))))
+
+(defun send-local-picture (target path)
+  (send-message target `(,(gmessage-local-picture path))))
 
 (defun send-music-share (target title summary jumpUrl pictureUrl musicUrl &optional (brief ""))
   (send-message target `(,(gmessage-music-share title summary jumpUrl pictureUrl musicUrl brief))))
