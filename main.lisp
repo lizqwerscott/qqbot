@@ -80,7 +80,7 @@
 
 (schedule!
  :name "shutdown"
- :form ((when (time= (get-time 17 10))
+ :form ((when (time= (get-time 1 0))
           (run-shell "shutdown now")))
  :time (:second 10))
 
