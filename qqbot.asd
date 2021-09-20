@@ -9,6 +9,7 @@
                :lquery
                :plump
                :cl-strings
+               :cl-schedule
                :cl-ppcre
                :random-state)
   :serial t

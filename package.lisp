@@ -117,5 +117,5 @@
    :stop-task))
 
 (defpackage :qqbot
-  (:use :common-lisp :qqbot.head :qqbot.bot :bordeaux-threads :qqbot.card :qqbot.task :local-time)
+  (:use :common-lisp :qqbot.head :qqbot.bot :bordeaux-threads :qqbot.card :qqbot.task :local-time :cl-schedule)
   (:export :start))

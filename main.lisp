@@ -76,7 +76,13 @@
                 (run-shell "shutdown now")))
           "shutdown")
 
-(start-task "shutdown")
+;(start-task "shutdown")
+
+(schedule!
+ :name "shutdown"
+ :form ((when (time= (get-time 17 10))
+          (run-shell "shutdown now")))
+ :time (:second 10))
 
 (defun start ()
   (let ((runp t))
