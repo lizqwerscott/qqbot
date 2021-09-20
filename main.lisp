@@ -59,17 +59,24 @@
                       (timestamp-month today-t)
                       (timestamp-year today-t))))
 
+(defun time= (time)
+  (let ((time-now (timestamp-to-universal (now))))
+    (and (>= time-now
+             (timestamp-to-universal time))
+         (<= time-now
+             (timestamp-to-universal (get-time (timestamp-hour time)
+                                               (+ 1 (timestamp-minute time))))))))
+
 (defun is-close ()
   (> (timestamp-to-universal (now))
      (timestamp-to-universal (get-time 23 00))))
 
 (add-task #'(lambda (task)
-              (sleep 2)
-              (when (is-close)
-                (run-shell "~/shutdown.py")))
+              (when (time= (get-time 1 0))
+                (run-shell "shutdown now")))
           "shutdown")
 
-;;(start-task "shutdown")
+(start-task "shutdown")
 
 (defun start ()
   (let ((runp t))
