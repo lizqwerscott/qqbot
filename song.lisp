@@ -8,10 +8,10 @@
 
 (defun search-song (songname &optional (limit 3))
   (parse-data (web-get "127.0.0.1:3000" "cloudsearch"
-                       `(("keywords" . ,(purl:url-encode songname))
-                         ("type" . 1)
-                         ("limit" . ,limit))
-            :jsonp t)))
+                       :args `(("keywords" . ,(purl:url-encode songname))
+                               ("type" . 1)
+                               ("limit" . ,limit))
+                       :jsonp t)))
 
 
 (defun get-info-song (result)
