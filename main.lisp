@@ -93,7 +93,7 @@
   (format t "connect finish~%")
   (bind)
   (get-group-list)
-  (send-text (get-master) "机器人启动完成")
+  (send-text (get-master) "陈睿起床啦!!!")
   (bt:make-thread #'run))
 
 (in-package :cl-user)

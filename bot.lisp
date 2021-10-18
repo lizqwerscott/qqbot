@@ -14,6 +14,8 @@
 (defparameter *is-repeat* t)
 (defparameter *repeat-command* nil)
 
+(defparameter *patron* (make-instance 'patron:patron :worker-capacity 3 :job-capacity 32 :worker-timeout-duration 60))
+
 (defstruct people
   id
   name)
@@ -313,9 +315,12 @@
                    *command-mode-map*)
           (if (string= "陈睿" (first text))
               (if (gethash (second text) *command-map*)
-                  (funcall (gethash (second text) *command-map*)
-                           (assoc-value message "sender")
-                           (cdr (cdr text)))
+                  (submit-job *patron*
+                              (make-instance 'patron:job
+                                             :function (lambda ()
+                                                         (funcall (gethash (second text) *command-map*)
+                                                                  (assoc-value message "sender")
+                                                                  (cdr (cdr text))))))
                   (send-text target "没有这个命令哟!"))))
         (format t "text is null~%"))))
 
@@ -400,15 +405,19 @@
                        (send-text target "参数错误, 第一个参数为 发的qq号, 第二个为在那个群, 第三个为几次 (最多3次)示列:陈睿 1963771277 0 5")))))
 
 (defun run ()
-  (do ()
-      (nil 'done)
-    (let ((message (car (last (fetch-last-message)))))
-      (if message
-	  (let ((type (assoc-value message "type")))
-            (format t "message:~A~%" message)
-	    (format t "type:~A~%" type)
-	    (when (or (string= "FriendMessage" type) (string= "GroupMessage" type))
+  (format t "Start patron...~%")
+  (start-patron *patron*)
+  (with-event-loop ()
+    (as:with-interval (1)
+      (let ((message (car (last (fetch-last-message)))))
+        (if message
+            (let ((type (assoc-value message "type")))
               (format t "message:~A~%" message)
-	      (handle-message message)))))))
+              (format t "type:~A~%" type)
+              (when (or (string= "FriendMessage" type) (string= "GroupMessage" type))
+                ;;(format t "message:~A~%" message)
+                (handle-message message)))))))
+  (format t "Stop patron...~%")
+  (stop-patron *patron* :wait t))
 
 (in-package :cl-user)

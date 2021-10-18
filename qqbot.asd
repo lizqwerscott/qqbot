@@ -11,6 +11,8 @@
                :cl-strings
                :cl-schedule
                :cl-ppcre
+               :cl-async
+               :patron
                :random-state)
   :serial t
   :components ((:file "package")

@@ -27,7 +27,7 @@
    :web-get))
 
 (defpackage :qqbot.bot
-  (:use :common-lisp :drakma :qqbot.head :babel :qqbot.web)
+  (:use :common-lisp :drakma :qqbot.head :babel :qqbot.web :cl-async :patron)
   (:export
    :people
    :make-people
