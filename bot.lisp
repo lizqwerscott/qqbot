@@ -14,7 +14,7 @@
 (defparameter *is-repeat* t)
 (defparameter *repeat-command* nil)
 
-(defparameter *patron* (make-instance 'patron:patron :worker-capacity 3 :job-capacity 32 :worker-timeout-duration 60))
+(defparameter *patron* (make-instance 'patron:patron :worker-capacity 3 :job-capacity 32 :worker-timeout-duration 600))
 
 (defstruct people
   id
