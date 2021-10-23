@@ -408,7 +408,12 @@
   (format t "Start patron...~%")
   (start-patron *patron*)
   (with-event-loop ()
-    (as:with-interval (1)
+    (with-interval (1)
+      (dolist (task (run-tasks))
+        (when (time= (first task))
+          (submit-job *patron*
+                      (make-instance 'patron:job
+                                     :function (second task)))))
       (let ((message (car (last (fetch-last-message)))))
         (if message
             (let ((type (assoc-value message "type")))

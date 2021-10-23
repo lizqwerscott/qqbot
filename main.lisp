@@ -51,32 +51,13 @@
                            (send-text target (handle-code code)))
                          (send-text target "你没有权限!"))))))
 
-(defun get-time (hour minute)
-  (let ((today-t (now)))
-    (make-timestamp )
-    (encode-timestamp 0 0 minute hour
-                      (timestamp-day today-t)
-                      (timestamp-month today-t)
-                      (timestamp-year today-t))))
+(add-task #'(lambda ()
+              (send-text 1963771277 "hello"))
+          "hello"
+          (get-time 23 27))
 
-(defun time= (time)
-  (let ((time-now (timestamp-to-universal (now))))
-    (and (>= time-now
-             (timestamp-to-universal time))
-         (<= time-now
-             (timestamp-to-universal (get-time (timestamp-hour time)
-                                               (+ 1 (timestamp-minute time))))))))
+(start-task "hello")
 
-(defun is-close ()
-  (> (timestamp-to-universal (now))
-     (timestamp-to-universal (get-time 23 00))))
-
-(add-task #'(lambda (task)
-              (when (time= (get-time 1 0))
-                (run-shell "shutdown now")))
-          "shutdown")
-
-;(start-task "shutdown")
 
 (defun start ()
   (let ((runp t))

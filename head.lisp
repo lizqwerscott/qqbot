@@ -69,6 +69,9 @@
 (defun get-source-dir ()
   (asdf:system-source-directory :qqbot))
 
+(defun generate-path (path)
+  (merge-pathnames path (get-source-dir)))
+
 (defun save-l-picture (bits path)
   (with-open-file (out path
                        :direction :output

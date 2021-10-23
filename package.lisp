@@ -17,6 +17,7 @@
    :save-json-file
    :lst-line-string
    :get-source-dir
+   :generate-path
    :save-l-picture))
 
 (defpackage :qqbot.web
@@ -26,8 +27,22 @@
    :web-post
    :web-get))
 
+(defpackage :qqbot.task
+  (:use :common-lisp :qqbot.head :local-time :patron)
+  (:export
+   :task-runp
+   :add-task
+   :remove-task
+   :start-task
+   :stop-task
+   :run-tasks
+   :get-time
+   :time=
+   :time-mintue=))
+
+
 (defpackage :qqbot.bot
-  (:use :common-lisp :drakma :qqbot.head :babel :qqbot.web :cl-async :patron)
+  (:use :common-lisp :drakma :qqbot.head :qqbot.task :babel :qqbot.web :cl-async :patron :jonathan)
   (:export
    :people
    :make-people
@@ -107,15 +122,9 @@
 (defpackage :qqbot.song
   (:use :common-lisp :qqbot.bot :qqbot.head :qqbot.web))
 
-(defpackage :qqbot.task
-  (:use :common-lisp :qqbot.bot :qqbot.head :bordeaux-threads)
-  (:export
-   :task-runp
-   :add-task
-   :remove-task
-   :start-task
-   :stop-task))
+(defpackage :qqbot.weixgzh
+  (:use :common-lisp :qqbot.bot :qqbot.head :qqbot.web :bordeaux-threads :babel :drakma :jonathan :qqbot.task))
 
 (defpackage :qqbot
-  (:use :common-lisp :qqbot.head :qqbot.bot :bordeaux-threads :qqbot.card :qqbot.task :local-time :cl-schedule)
+  (:use :common-lisp :qqbot.head :qqbot.bot :bordeaux-threads :qqbot.card :qqbot.task :qqbot.weixgzh :local-time :cl-schedule )
   (:export :start))
