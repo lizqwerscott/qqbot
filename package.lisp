@@ -3,6 +3,7 @@
 (defpackage :qqbot.head
   (:use :common-lisp :random-state :jonathan :babel)
   (:export
+   :*patron*
    :run-shell
    :random-int-r
    :assoc-value
@@ -27,22 +28,8 @@
    :web-post
    :web-get))
 
-(defpackage :qqbot.task
-  (:use :common-lisp :qqbot.head :local-time :patron)
-  (:export
-   :task-runp
-   :add-task
-   :remove-task
-   :start-task
-   :stop-task
-   :run-tasks
-   :get-time
-   :time=
-   :time-mintue=))
-
-
 (defpackage :qqbot.bot
-  (:use :common-lisp :drakma :qqbot.head :qqbot.task :babel :qqbot.web :cl-async :patron :jonathan)
+  (:use :common-lisp :drakma :qqbot.head :babel :qqbot.web :patron :jonathan)
   (:export
    :people
    :make-people
@@ -65,6 +52,7 @@
    :mute-group-member
    :gmessage-text
    :gmessage-picture
+   :gmessage-at
    :send-message
    :send-text
    :send-text-lst
@@ -72,6 +60,9 @@
    :send-local-picture
    :send-music-share
    :send-json
+   :send-at
+   :send-at-text
+
    :sender-groupp
    :sender-id
    :sender-name
@@ -79,16 +70,38 @@
    :group-name
    :target-id
    :get-text-message-chain
+
    :add-command
    :remove-command
+
    :add-mode-command
    :remove-mode-command
    :active-mode
    :deactive-mode
+
+   :fetch-last-message
    :handle-message
    :get-all-command
    :run
    :args-type))
+
+(defpackage :qqbot.task
+  (:use :common-lisp :qqbot.head :qqbot.bot :local-time :patron)
+  (:export
+   :task-runp
+   :add-task
+   :remove-task
+   :start-task
+   :stop-task
+   :run-tasks
+
+   :add-start-task
+   :remove-start-task
+   :run-start-tasks
+
+   :get-time
+   :time=
+   :time-mintue=))
 
 (defpackage :qqbot.text
   (:use :common-lisp :qqbot.bot :qqbot.web :qqbot.head)
@@ -126,5 +139,6 @@
   (:use :common-lisp :qqbot.bot :qqbot.head :qqbot.web :bordeaux-threads :babel :drakma :jonathan :qqbot.task))
 
 (defpackage :qqbot
-  (:use :common-lisp :qqbot.head :qqbot.bot :bordeaux-threads :qqbot.card :qqbot.task :qqbot.weixgzh :local-time :cl-schedule )
+  (:import-from :bordeaux-threads :make-thread)
+  (:use :common-lisp :qqbot.head :qqbot.bot :qqbot.card :qqbot.task :qqbot.weixgzh :qqbot.text :local-time :cl-schedule :patron :cl-async)
   (:export :start))

@@ -139,6 +139,6 @@
                                                            (format nil "Link:~A" (second item))))
                                (sleep 1))
                              (send-text target "没有找到这个公众号或者文章显示个数过多."))))
-                     (send-text (target-id sender) "用法陈睿 公众号文章 共青团中央 3, 最大的最近文章个数是13"))))
+                     (send-text (target-id sender) "用法:伊蕾娜 公众号文章 共青团中央 3, 最大的最近文章个数是13"))))
 
 (in-package :cl-user)

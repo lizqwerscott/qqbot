@@ -1,5 +1,10 @@
 (in-package :qqbot.head)
 
+(defvar *patron* (make-instance 'patron:patron
+                                :worker-capacity 3
+                                :job-capacity 32
+                                :worker-timeout-duration 600))
+
 (defun random-int-r (max)
   (let ((generator (random-state:make-generator :mersenne-twister-32 (ccl:current-time-in-nanoseconds))))
     (random-state:random-int generator 0 max)))

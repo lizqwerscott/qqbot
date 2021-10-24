@@ -38,7 +38,7 @@
                                    (if (is-admin (sender-id sender)) "管理员"
                                        "陌生人"))))
 		   (send-text (target-id sender)
-                                      (format nil "你好，~A，我是陈睿机器人。" chenhu)))))
+                                      (format nil "你好，~A，我是伊蕾娜。" chenhu)))))
 
 (add-command "run"
              #'(lambda (sender args)
@@ -52,11 +52,62 @@
                          (send-text target "你没有权限!"))))))
 
 (add-task #'(lambda ()
-              (send-text 1963771277 "hello"))
-          "hello"
-          (get-time 23 27))
+              (send-text (get-master)
+                         "主人晚安")
+              (send-text 769649079
+                         "大家晚安哟!!!"))
+          "goodnight"
+          (get-time 23 01))
 
-(start-task "hello")
+(start-task "goodnight")
+
+(add-start-task #'(lambda ()
+                    (send-text (get-master) "伊蕾娜起床了!!!"))
+                "hello")
+
+(add-start-task #'(lambda ()
+                    (send-text 769649079
+                               "大家早安, 伊蕾娜爱大家哟!!!")
+                    (send-at-text 769649079
+                                  (get-master)
+                                  "主人!!!")
+                    (send-text 769649079
+                               (get-random-text "love"))
+                    (send-at-text 769649079
+                                  1072881846
+                                  "笨蛋!!!")
+                    (send-text 769649079
+                               "笨蛋起床了"))
+                "goodmorning")
+
+(defun run ()
+  (format t "Start patron...~%")
+  (start-patron *patron*)
+  (format t "Start qqbot event~%")
+  (dolist (task (run-start-tasks))
+    (submit-job *patron*
+                (make-instance 'patron:job
+                               :function #'(lambda ()
+                                             (sleep (first task))
+                                             (funcall (second task))))))
+  (format t "finish qqbot start event~%")
+  (with-event-loop ()
+    (with-interval (1)
+      (dolist (task (run-tasks))
+        (when (time= (first task))
+          (submit-job *patron*
+                      (make-instance 'patron:job
+                                     :function (second task)))))
+      (let ((message (car (last (fetch-last-message)))))
+        (if message
+            (let ((type (assoc-value message "type")))
+              (format t "message:~A~%" message)
+              (format t "type:~A~%" type)
+              (when (or (string= "FriendMessage" type) (string= "GroupMessage" type))
+                ;;(format t "message:~A~%" message)
+                (handle-message message)))))))
+  (format t "Stop patron...~%")
+  (stop-patron *patron* :wait t))
 
 
 (defun start ()
@@ -74,7 +125,6 @@
   (format t "connect finish~%")
   (bind)
   (get-group-list)
-  (send-text (get-master) "陈睿起床啦!!!")
-  (bt:make-thread #'run))
+  (make-thread #'run))
 
 (in-package :cl-user)

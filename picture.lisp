@@ -79,6 +79,6 @@
                    (format t "text:~A~%" (car args))
                    (if (car args)
                        (send-local-picture target (qr-generate (car args)))
-                       (send-text target "参数错误, 例子:陈睿 qr hello")))))
+                       (send-text target "参数错误, 例子:伊蕾娜 qr hello")))))
 
 (in-package :cl-user)

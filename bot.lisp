@@ -14,8 +14,6 @@
 (defparameter *is-repeat* t)
 (defparameter *repeat-command* nil)
 
-(defparameter *patron* (make-instance 'patron:patron :worker-capacity 3 :job-capacity 32 :worker-timeout-duration 600))
-
 (defstruct people
   id
   name)
@@ -67,7 +65,7 @@
   (setf *admin* (delete qq *admin*)))
 
 (defun is-admin (qq)
-  (find qq *admin*))
+  (find (format nil "~A" qq) *admin* :test #'string=))
 
 (defun list-admin ()
   *admin*)
@@ -176,6 +174,10 @@
   `(("type" . "Json")
     ("json" . ,json)))
 
+(defun gmessage-at (target)
+  `(("type" . "At")
+    ("target" . ,target)))
+
 (defun send-message (target message-chain)
   (let ((command (if (find target *group-list* :key #'qq-group-id) "sendGroupMessage" "sendFriendMessage")))
     (send-command-post command
@@ -207,6 +209,13 @@
 
 (defun send-json (target json)
   (send-message target `(,(gmessage-json json))))
+
+(defun send-at (target person)
+  (send-message target `(,(gmessage-at person))))
+
+(defun send-at-text (target person text)
+  (send-message target `(,(gmessage-at person)
+                         ,(gmessage-text text))))
 
 (defun sender-groupp (sender)
   (assoc-value sender "group"))
@@ -313,7 +322,7 @@
                                           (assoc-value message "sender")
                                           (cdr text)))))))
                    *command-mode-map*)
-          (if (string= "陈睿" (first text))
+          (if (string= "伊蕾娜" (first text))
               (if (gethash (second text) *command-map*)
                   (submit-job *patron*
                               (make-instance 'patron:job
@@ -344,7 +353,7 @@
                                  (if help
                                      (send-text target help)
                                      (send-text target "这个命令没有帮助,这么简单的命令还需要看帮助,你真是太弱了")))
-                               (send-text target "没有这个命令, 你可以用 陈睿 help 来获取所以命令"))
+                               (send-text target "没有这个命令, 你可以用 伊蕾娜 help 来获取所以命令"))
                            (progn
                              (send-text target "命令的使用方法 陈睿 命令 参数1 参数2,所有命令后面的参数以空格分割, help 后面加命令的名字获取每条命令详细帮助")
                              (send-text target
@@ -359,7 +368,7 @@
                          (add-repeat `(,(first args) . ,(second args)))
                          (send-text target "成功"))
                        (send-text target "参数错误"))))
-             "第一个参数为你说的,第二个参数为机器人回复的")
+             "第一个参数为你说的,第二个参数为伊蕾娜回复的")
 
 (add-command "删除回复"
              #'(lambda (sender args)
@@ -402,27 +411,6 @@
                                (send-nudge (parse-integer (first args))
                                            (qq-group-id group)))
                              (send-text target "群号请写列出群聊的编号")))
-                       (send-text target "参数错误, 第一个参数为 发的qq号, 第二个为在那个群, 第三个为几次 (最多3次)示列:陈睿 1963771277 0 5")))))
-
-(defun run ()
-  (format t "Start patron...~%")
-  (start-patron *patron*)
-  (with-event-loop ()
-    (with-interval (1)
-      (dolist (task (run-tasks))
-        (when (time= (first task))
-          (submit-job *patron*
-                      (make-instance 'patron:job
-                                     :function (second task)))))
-      (let ((message (car (last (fetch-last-message)))))
-        (if message
-            (let ((type (assoc-value message "type")))
-              (format t "message:~A~%" message)
-              (format t "type:~A~%" type)
-              (when (or (string= "FriendMessage" type) (string= "GroupMessage" type))
-                ;;(format t "message:~A~%" message)
-                (handle-message message)))))))
-  (format t "Stop patron...~%")
-  (stop-patron *patron* :wait t))
+                       (send-text target "参数错误, 第一个参数为 发的qq号, 第二个为在那个群, 第三个为几次 (最多3次)示列:伊蕾娜 1963771277 0 5")))))
 
 (in-package :cl-user)

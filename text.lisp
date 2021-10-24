@@ -30,6 +30,9 @@
   (load-line-file (merge-pathnames "data/twobread.txt"
                                    (get-source-dir))))
 
+(defun zilie ()
+  (load-line-file (generate-path "data/zilian.txt")))
+
 (add-command "笑话"
              #'(lambda (sender args)
                  (send-text (target-id sender)
@@ -74,7 +77,7 @@
                                    (send-text target (car miyans))
                                    (send-text-lst target miyan))
                                  (send-text target (format nil "~A --~A" miyan (car miyans)))))))
-                       (send-text target "参数错误, 例子:陈睿 名言 2 或者 陈睿 名言")))))
+                       (send-text target "参数错误, 例子:伊蕾娜 名言 2 或者 伊蕾娜 名言")))))
 
 (add-command "名言人物"
              #'(lambda (sender args)
@@ -103,5 +106,16 @@
                      (send-text-lst target (list (format nil "类型:~A" (assoc-value siju "category"))
                                                  (format nil "来自:~A" (assoc-value siju "origin"))
                                                  (format nil "作者:~A" (assoc-value siju "author"))))))))
+
+(add-command "自恋"
+             #'(lambda (sender args)
+                 (dolist (line (zilie))
+                   (let ((s-l (split-s line "|")))
+                     (send-text (target-id sender)
+                                (first s-l))
+                     (sleep 1)
+                     (send-text (target-id sender)
+                                (second s-l)))
+                   (sleep 2))))
 
 (in-package :cl-user)
