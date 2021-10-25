@@ -33,6 +33,27 @@
 (defun zilie ()
   (load-line-file (generate-path "data/zilian.txt")))
 
+(defun get-random-news (num)
+  (web-get "api.tianapi.com"
+           "world/index"
+           :args `(("key" . "f07a432f84956febe20375736114244e")
+                   ("num" . ,num)
+                   ("rand". 1))
+           :jsonp t))
+
+(defun get-news (query num)
+  (web-get "api.tianapi.com"
+           "world/index"
+           :args `(("key" . "f07a432f84956febe20375736114244e")
+                   ("num" . ,num)
+                   ("word". ,query))
+           :jsonp t))
+
+(defun handle-news (news)
+  (if (= 200 (assoc-value news "code"))
+      (assoc-value news "newslist")
+      (format t "error:~A~%" (assoc-value news "msg"))))
+
 (add-command "笑话"
              #'(lambda (sender args)
                  (send-text (target-id sender)
@@ -117,5 +138,24 @@
                      (send-text (target-id sender)
                                 (second s-l)))
                    (sleep 2))))
+
+(add-command "新闻"
+             #'(lambda (sender args)
+                 (if (or (args-type args (list 'numberp))
+                         (args-type args (list 'numberp 'symbolp)))
+                     (let ((target (target-id sender))
+                           (num (parse-integer (first args)))
+                           (query (second args)))
+                       (let ((news (handle-news (if query
+                                                    (get-news (purl:url-encode query) num)
+                                                    (get-random-news num)))))
+                         (dolist (new news)
+                           (format t "~A~%" new)
+                           (send-text-lst target
+                                              (list (format nil "标题:~A" (assoc-value new "title"))
+                                                    (format nil "连接:~A" (assoc-value new "url"))
+                                                    (format nil "时间:~A" (assoc-value new "ctime"))
+                                                    (format nil "来源:~A" (assoc-value new "source")))))))
+                     (send-text (target-id sender) "参数错误,例子:伊蕾娜 新闻 3 或者 伊蕾娜 新闻 3 疫苗"))))
 
 (in-package :cl-user)
