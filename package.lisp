@@ -11,6 +11,7 @@
    :string-merge
    :string-merges
    :string-include
+   :remove-ht-space
    :bits-to-json
    :list-directory
    :load-line-file

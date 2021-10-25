@@ -299,39 +299,61 @@
                   (setf result (funcall (elt types i) object)))))
       result))))
 
+(defun handle-mode-message (text target sender)
+  (when *is-repeat*
+    (let ((repeat (assoc-value *repeat-command* (first text))))
+      (when repeat
+        (send-text target repeat)))
+    (maphash #'(lambda (k v)
+                 (when (find target (gethash k *command-mode-active-map*))
+                   (if (string= "help" (first text))
+                       (send-text-lst target
+                                      (mapcar #'(lambda (x) (car x)) v))
+                       (let ((command (assoc-value v (first text))))
+                         (when command
+                           (funcall command
+                                    sender
+                                    (cdr text)))))))
+             *command-mode-map*)))
+
+(defun handle-command (text target sender)
+  (if (gethash (first text) *command-map*)
+      (submit-job *patron*
+                  (make-instance 'patron:job
+                                 :function (lambda ()
+                                             (funcall (gethash (first text) *command-map*)
+                                                      sender
+                                                      (cdr text)))))
+      (send-text target "没有这个命令哟!")))
+
 ;;handle signal message
 (defun handle-message (message)
   (let ((type (assoc-value message "type"))
+        (message-chain (cdr (assoc-value message "messageChain")))
         (text (get-text-message-chain (assoc-value message "messageChain")))
+        (sender (assoc-value message "sender"))
         (target (target-id (assoc-value message "sender"))))
-    (if (stringp text)
-        (progn
-          (setf text (split-s text))
-          (when *is-repeat*
-            (let ((repeat (assoc-value *repeat-command* (first text))))
-              (when repeat
-                (send-text target repeat))))
-          (maphash #'(lambda (k v)
-                       (when (find target (gethash k *command-mode-active-map*))
-                         (if (string= "help" (first text))
-                             (send-text-lst target
-                                                    (mapcar #'(lambda (x) (car x)) v))
-                             (let ((command (assoc-value v (first text))))
-                               (when command
-                                 (funcall command
-                                          (assoc-value message "sender")
-                                          (cdr text)))))))
-                   *command-mode-map*)
-          (if (string= "伊蕾娜" (first text))
-              (if (gethash (second text) *command-map*)
-                  (submit-job *patron*
-                              (make-instance 'patron:job
-                                             :function (lambda ()
-                                                         (funcall (gethash (second text) *command-map*)
-                                                                  (assoc-value message "sender")
-                                                                  (cdr (cdr text))))))
-                  (send-text target "没有这个命令哟!"))))
-        (format t "text is null~%"))))
+    (let ((first-str (first message-chain)))
+      (if (string= "At" (assoc-value first-str "type"))
+          (when (= 3027736450 (assoc-value first-str "target"))
+            (format t "handle command~%")
+            (when (and (second message-chain)
+                       (string= "Plain" (assoc-value (second message-chain) "type")))
+              (format t "handle command:~S~%" (assoc-value (second message-chain) "text"))
+              (handle-command (split-s (remove-ht-space (assoc-value (second message-chain) "text")))
+                              target
+                              sender)))
+          (when (string= "Plain" (assoc-value first-str "type"))
+            (let ((message-text (split-s (remove-ht-space (assoc-value first-str "text")))))
+              (handle-mode-message message-text
+                                   target
+                                   sender)
+              (when (string= "伊蕾娜" (first message-text))
+                (format t "handle command:~S~%" message-text)
+                (when (cdr message-text)
+                  (handle-command (cdr message-text)
+                                  target
+                                  sender)))))))))
 
 (defun get-all-command ()
   (let ((result nil))

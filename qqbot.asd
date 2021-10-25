@@ -10,7 +10,6 @@
                :plump
                :cl-strings
                :cl-schedule
-               :cl-ppcre
                :cl-async
                :patron
                :random-state)

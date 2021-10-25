@@ -88,8 +88,9 @@
     (submit-job *patron*
                 (make-instance 'patron:job
                                :function #'(lambda ()
-                                             (sleep (first task))
-                                             (funcall (second task))))))
+                                             ;(sleep (first task))
+                                             ;(funcall (second task))
+                                             ))))
   (format t "finish qqbot start event~%")
   (with-event-loop ()
     (with-interval (1)
