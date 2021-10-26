@@ -87,13 +87,5 @@
       (write-sequence bits out)))
   path)
 
-(defun remove-ht-space (str)
-  (when (stringp str)
-    (subseq str
-            (do ((i 0 (+ i 1)))
-                ((not (string= " " (elt str i))) i))
-            (do ((i (- (length str) 1) (- i 1)))
-                ((not (string= " " (elt str i))) (+ 1 i))))))
-
 (in-package :cl-user)
 

@@ -336,15 +336,14 @@
     (let ((first-str (first message-chain)))
       (if (string= "At" (assoc-value first-str "type"))
           (when (= 3027736450 (assoc-value first-str "target"))
-            (format t "handle command~%")
             (when (and (second message-chain)
                        (string= "Plain" (assoc-value (second message-chain) "type")))
               (format t "handle command:~S~%" (assoc-value (second message-chain) "text"))
-              (handle-command (split-s (remove-ht-space (assoc-value (second message-chain) "text")))
+              (handle-command (split-s (clean (Assoc-value (second message-chain) "text")))
                               target
                               sender)))
           (when (string= "Plain" (assoc-value first-str "type"))
-            (let ((message-text (split-s (remove-ht-space (assoc-value first-str "text")))))
+            (let ((message-text (split-s (clean (assoc-value first-str "text")))))
               (handle-mode-message message-text
                                    target
                                    sender)

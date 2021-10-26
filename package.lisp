@@ -11,7 +11,6 @@
    :string-merge
    :string-merges
    :string-include
-   :remove-ht-space
    :bits-to-json
    :list-directory
    :load-line-file
@@ -30,7 +29,7 @@
    :web-get))
 
 (defpackage :qqbot.bot
-  (:use :common-lisp :drakma :qqbot.head :babel :qqbot.web :patron :jonathan)
+  (:use :common-lisp :drakma :qqbot.head :babel :qqbot.web :patron :jonathan :cl-strings)
   (:export
    :people
    :make-people
