@@ -149,13 +149,13 @@
                        (let ((news (handle-news (if query
                                                     (get-news (purl:url-encode query) num)
                                                     (get-random-news num)))))
-                         (dolist (new news)
-                           (format t "~A~%" new)
-                           (send-text-lst target
-                                              (list (format nil "标题:~A" (assoc-value new "title"))
-                                                    (format nil "连接:~A" (assoc-value new "url"))
-                                                    (format nil "时间:~A" (assoc-value new "ctime"))
-                                                    (format nil "来源:~A" (assoc-value new "source")))))))
+                         (send-text-lst target
+                                        (mapcar #'(lambda (new)
+                                                    (format nil
+                                                            "~A ~A"
+                                                            (assoc-value new "title")
+                                                            (assoc-value new "ctime")))
+                                                news))))
                      (send-text (target-id sender) "参数错误,例子:伊蕾娜 新闻 3 或者 伊蕾娜 新闻 3 疫苗"))))
 
 (in-package :cl-user)

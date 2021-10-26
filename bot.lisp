@@ -348,7 +348,8 @@
               (handle-mode-message message-text
                                    target
                                    sender)
-              (when (string= "伊蕾娜" (first message-text))
+              (when (or (string= "@伊蕾娜" (first message-text))
+                        (string= "伊蕾娜" (first message-text)))
                 (format t "handle command:~S~%" message-text)
                 (when (cdr message-text)
                   (handle-command (cdr message-text)
