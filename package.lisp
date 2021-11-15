@@ -108,6 +108,11 @@
   (:export
    :get-random-text))
 
+(defpackage :qqbot.question
+  (:import-from :drakma :http-request)
+  (:use :common-lisp :qqbot.bot :qqbot.head :purl :cl-json)
+  (:export))
+
 (defpackage :qqbot.picture
   (:use :common-lisp :qqbot.bot :qqbot.head :qqbot.web :drakma)
   (:export

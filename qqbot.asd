@@ -9,6 +9,7 @@
                :lquery
                :plump
                :cl-strings
+               :cl-json
                :cl-schedule
                :cl-async
                :patron
@@ -20,6 +21,7 @@
                (:file "bot")
                (:file "task")
                (:file "text")
+               (:file "question")
                (:file "picture")
                (:file "bt")
                (:file "card")
