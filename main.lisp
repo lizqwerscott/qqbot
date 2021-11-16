@@ -57,7 +57,7 @@
               (send-text 769649079
                          "大家晚安哟!!!"))
           "goodnight"
-          (get-time 23 01))
+          (get-time-range 23 30))
 
 (start-task "goodnight")
 
@@ -65,20 +65,20 @@
                     (send-text (get-master) "伊蕾娜起床了!!!"))
                 "hello")
 
-(add-start-task #'(lambda ()
-                    (send-text 769649079
-                               "大家早安, 伊蕾娜爱大家哟!!!")
-                    (send-at-text 769649079
-                                  (get-master)
-                                  "主人!!!")
-                    (send-text 769649079
-                               (get-random-text "love"))
-                    (send-at-text 769649079
-                                  1072881846
-                                  "笨蛋!!!")
-                    (send-text 769649079
-                               "笨蛋起床了"))
-                "goodmorning")
+(defun goodmorning ()
+  (send-text 769649079
+             "大家早安, 伊蕾娜爱大家哟!!!")
+  (send-at-text 769649079
+                1072881846
+                "主人!!!")
+  (send-text 769649079
+             (get-random-text "love")))
+
+(add-task #'goodmorning
+          "goodmorning"
+          (get-time-range 7 0 :step-hour 3))
+
+(start-task "goodmorning")
 
 (defun run ()
   (format t "Start patron...~%")
@@ -94,10 +94,12 @@
   (with-event-loop ()
     (with-interval (1)
       (dolist (task (run-tasks))
-        (when (time= (first task))
+        (when (and (not (task-runp task))
+                   (apply #'time-in (task-time task)))
           (submit-job *patron*
                       (make-instance 'patron:job
-                                     :function (second task)))))
+                                     :function (task-func task)))
+          (setf (task-runp task) t)))
       (let ((message (car (last (fetch-last-message)))))
         (if message
             (let ((type (assoc-value message "type")))

@@ -3,6 +3,7 @@
 (defstruct task
   name
   time
+  runp
   func)
 
 (defparameter *tasks* (make-hash-table :test #'equal))
@@ -17,6 +18,13 @@
                       (timestamp-month today-t)
                       (timestamp-year today-t))))
 
+(defun get-time-range (hour minute &key (step-hour 0) (step-mintue 1))
+  (list (get-time hour minute)
+        (get-time (+ hour
+                     step-hour)
+                  (+ minute
+                     step-mintue))))
+
 (defun time-mintue= (time)
   (let ((time-now (timestamp-to-universal (now))))
     (and (>= time-now
@@ -29,6 +37,11 @@
   (let ((time-now (timestamp-to-universal (now))))
     (= time-now
        (timestamp-to-universal time))))
+
+(defun time-in (start end)
+  (let ((time-now (timestamp-to-universal (now))))
+    (and (>= time-now (timestamp-to-universal start))
+         (<= time-now (timestamp-to-universal end)))))
 
 (defun add-run-task (task)
   (setf *run-tasks*
@@ -45,7 +58,7 @@
   (when (stringp name)
     (when (not (gethash name *tasks*))
       (setf (gethash name *tasks*)
-            (make-task :name name :time time :func func)))))
+            (make-task :name name :time time :func func :runp nil)))))
 
 (defun remove-task (name)
   (when (stringp name)
@@ -83,10 +96,7 @@
         (remove-run-task (gethash name *tasks*))))))
 
 (defun run-tasks ()
-  (mapcar #'(lambda (task)
-              (list (task-time task)
-                    (task-func task)))
-          *run-tasks*))
+  *run-tasks*)
 
 (defun run-start-tasks ()
   (mapcar #'(lambda (task)

@@ -88,7 +88,11 @@
 (defpackage :qqbot.task
   (:use :common-lisp :qqbot.head :qqbot.bot :local-time :patron)
   (:export
+   :task-name
+   :task-time
+   :task-func
    :task-runp
+
    :add-task
    :remove-task
    :start-task
@@ -100,8 +104,10 @@
    :run-start-tasks
 
    :get-time
+   :get-time-range
    :time=
-   :time-mintue=))
+   :time-mintue=
+   :time-in))
 
 (defpackage :qqbot.text
   (:use :common-lisp :qqbot.bot :qqbot.web :qqbot.head)

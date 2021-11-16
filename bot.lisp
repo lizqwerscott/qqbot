@@ -377,7 +377,7 @@
                                      (send-text target "这个命令没有帮助,这么简单的命令还需要看帮助,你真是太弱了")))
                                (send-text target "没有这个命令, 你可以用 伊蕾娜 help 来获取所以命令"))
                            (progn
-                             (send-text target "命令的使用方法 陈睿 命令 参数1 参数2,所有命令后面的参数以空格分割, help 后面加命令的名字获取每条命令详细帮助")
+                             (send-text target "命令的使用方法 伊蕾娜 命令 参数1 参数2,所有命令后面的参数以空格分割, help 后面加命令的名字获取每条命令详细帮助")
                              (send-text target
                                                 (lst-line-string commands)))))
                      (send-text (target-id sender) "参数不对"))))
