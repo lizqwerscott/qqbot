@@ -36,7 +36,7 @@
 (defun get-bt ()
   (mapcar #'(lambda (item)
               (list (format nil "~A" (gethash :name item))
-                    (format nil "速度:~AMB/s" (/ (gethash :rate-download item) (* 1024 1024)))
+                    (format nil "速度:~AMB/s" (float (/ (gethash :rate-download item) (* 1024 1024))))
                     (format nil "进度:~A" (let ((total (gethash :total-size item))
                                                 (left (gethash :left-until-done item)))
                                             (if (= total 0)
