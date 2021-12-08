@@ -48,8 +48,18 @@
                              (is-admin (sender-id sender)))
                          (progn
                            (format t "handle-code-right:~A~%" code)
-                           (send-text target (handle-code code)))
+                           (handler-case
+                               (send-text target (handle-code code))
+                             (error (c)
+                               (send-text target c))))
                          (send-text target "你没有权限!"))))))
+
+(add-command "重启"
+             #'(lambda (sender args)
+                 (let ((target (target-id sender)))
+                   (if (args-type args (list #'numberp))
+                       ()
+                       (send-text target "")))))
 
 (add-task #'(lambda ()
               (send-text (get-master)

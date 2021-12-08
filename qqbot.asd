@@ -1,6 +1,7 @@
 (defsystem :qqbot
   :depends-on (:cl-ppcre
                :drakma
+               :cl-transmission
                :babel
                :jonathan
                :bordeaux-threads

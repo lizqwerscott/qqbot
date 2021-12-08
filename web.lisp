@@ -8,16 +8,16 @@
     (format nil "~A~A" url str-args)))
 
 (defun web-post (host command &key args (jsonp nil))
-  (let ((text (octets-to-string (http-request (generate-url host command)
-                                      :method :post
-                                      :content (string-to-octets (to-json args :from :alist))))))
+  (let ((text (http-request (generate-url host command)
+                            :method :post
+                            :content (string-to-octets (to-json args :from :alist)))))
     (if jsonp
         (parse text :as :alist)
         text)))
 
 (defun web-get (host command &key args (jsonp nil))
-  (let ((text (octets-to-string (http-request (generate-url host command args)
-                                                     :method :get))))
+  (let ((text (http-request (generate-url host command args)
+                            :method :get)))
     (if jsonp
         (parse text :as :alist)
         text)))
