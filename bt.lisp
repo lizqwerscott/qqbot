@@ -104,22 +104,22 @@
                        (let ((result (get-bt)))
                          (if (and args (car args))
                              (let ((args1 (car args)))
-                               (send-text-lst target
-                                              (cond ((string= args1 "未完成")
+                               (dolist (item (cond ((string= args1 "未完成")
                                                      (first result))
                                                     ((string= args1 "暂停")
                                                      (second result))
                                                     ((string= args1 "完成")
                                                      (third result))
                                                     ((string= args1 "其他")
-                                                     (fourth result)))))
-                             (send-text-lst target
+                                                     (fourth result))))
+                                 (send-text-lst target item)))
+                             (progn
+                               (send-text-lst target
                                             (list (format nil "未完成的:~A" (length (first result)))
                                                   (format nil "没速度或者暂停的:~A" (length (second result)))
                                                   (format nil "完成的:~A" (length (third result)))
-                                                  (format nil "其他:~A" (length (fourth result)))))))
-                     (send-text target "参数错误")))
-                 (dolist (item (get-bt))
-                   (send-text-lst (target-id sender) item))))
+                                                  (format nil "其他:~A" (length (fourth result)))))
+                               (send-text target "磁力列表命令可选择参数,未完成,暂停,完成,其他"))))
+                     (send-text target "参数错误")))))
 
 (in-package :cl-user)
