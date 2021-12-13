@@ -32,8 +32,22 @@
 (defun add-bt (url)
   (transmission-add *conn* :filename url))
 
-;;return a list name have download and download rate
-(defun get-bt ()
+(defun classify (lst &optional (get-data nil) (pause nil) (finish nil) (another nil))
+  (if (not lst) (list get-data pause finish)
+      (let ((status (gethash :status (car lst))))
+        (classify (cdr lst)
+                  (append get-data (when (= status 4)
+                                     (list (car lst))))
+                  (append pause (when (= status 0)
+                                  (list (car lst))))
+                  (append finish (when (= status 6)
+                                   (list (car lst))))
+                  (append another (when (and (not (= status 4))
+                                             (not (= status 0))
+                                             (not (= status 6)))
+                                    (list (car lst))))))))
+
+(defun handle-bt (lst)
   (mapcar #'(lambda (item)
               (list (format nil "~A" (gethash :name item))
                     (format nil "速度:~AMB/s" (float (/ (gethash :rate-download item) (* 1024 1024))))
@@ -42,9 +56,16 @@
                                             (if (= total 0)
                                                 "0%"
                                                 (format nil "~A%" (float (* 100 (/ (- total left) total)))))))))
-          (transmission-get *conn*
-                            #(:name :rate-download :total-size :left-until-done)
-                            :strict t)))
+          lst))
+
+;;return a list name have download and download rate
+;;the bt status (:get-data 4 :pause 0 :finish 6)
+(defun get-bt ()
+  (mapcar #'(lambda (x)
+              (handle-bt x))
+          (classify (transmission-get *conn*
+                                      #(:name :rate-download :total-size :left-until-done :status)
+                                      :strict t))))
 
 (add-command "磁力"
              #'(lambda (sender args)
@@ -77,6 +98,27 @@
 
 (add-command "磁力列表"
              #'(lambda (sender args)
+                 (let ((target (target-id sender)))
+                   (if (or (args-type args)
+                           (args-type args (list #'symbolp)))
+                       (let ((result (get-bt)))
+                         (if (and args (car args))
+                             (let ((args1 (car args)))
+                               (send-text-lst target
+                                              (cond ((string= args1 "未完成")
+                                                     (first result))
+                                                    ((string= args1 "暂停")
+                                                     (second result))
+                                                    ((string= args1 "完成")
+                                                     (third result))
+                                                    ((string= args1 "其他")
+                                                     (fourth result)))))
+                             (send-text-lst target
+                                            (list (format nil "未完成的:~A" (length (first result)))
+                                                  (format nil "没速度或者暂停的:~A" (length (second result)))
+                                                  (format nil "完成的:~A" (length (third result)))
+                                                  (format nil "其他:~A" (length (fourth result)))))))
+                     (send-text target "参数错误")))
                  (dolist (item (get-bt))
                    (send-text-lst (target-id sender) item))))
 

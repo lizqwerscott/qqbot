@@ -14,6 +14,11 @@
 (defparameter *is-repeat* t)
 (defparameter *repeat-command* nil)
 
+(defparameter *addres* "192.168.3.3:8080")
+
+(defun set-remote ()
+  (setf *addres* "cn-zz-bgp-1.natfrp.cloud:11079"))
+
 (defstruct people
   id
   name)
@@ -98,10 +103,10 @@
       (format t "command error~%")))
 
 (defun send-command-post (command args)
-  (parse-data (web-post "192.168.3.3:8080" command :args args :jsonp t)))
+  (parse-data (web-post *addres* command :args args :jsonp t)))
 
 (defun send-command-get (command args)
-  (parse-data (web-get "192.168.3.3:8080" command :args args :jsonp t)))
+  (parse-data (web-get *addres* command :args args :jsonp t)))
 
 
 (defun verify (&optional (key "12138"))
