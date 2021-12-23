@@ -58,9 +58,8 @@
     (setf (gethash group *group-m*) play)))
 
 (defun join (group joiner)
-  (let ((play (gethash group *group-m*)))
-    (when play
-      (add-player play joiner))))
+  (when-bind (play (gethash group *group-m*))
+    (add-player play joiner)))
 
 (defmethod shoot ((play r-roulette))
   (let ((result (find (r-rplace play) (r-pb play))))

@@ -126,27 +126,24 @@
                       ("qq" . ,qq-id))))
 
 (defun get-message-size ()
-  (let ((message (send-command-get "countMessage"
-                                   `(("sessionKey" . ,*session*)))))
-    (if message
-	(setf *message-size* (assoc-value message "data")))))
+  (when-bind (message (send-command-get "countMessage"
+                                        `(("sessionKey" . ,*session*))))
+    (setf *message-size* (assoc-value message "data"))))
 ;;return message list
 (defun fetch-last-message ()
-  (let ((message (send-command-get "fetchLatestMessage"
-                                   `(("sessionKey" . ,*session*)
-                                     ("count" . 1)))))
-    (if message
-	(assoc-value message "data"))))
+  (when-bind (message (send-command-get "fetchLatestMessage"
+                                        `(("sessionKey" . ,*session*)
+                                          ("count" . 1))))
+    (assoc-value message "data")))
 
 (defun get-group-list ()
-  (let ((message (send-command-get "groupList"
-                                   `(("sessionKey" . ,*session*)))))
-    (when message
-      (setf *group-list* (make-array 3 :fill-pointer 0 :adjustable t))
-      (dolist (i (assoc-value message "data"))
-        (vector-push-extend (make-qq-group :id (assoc-value i "id")
-                                           :name (assoc-value i "name"))
-                            *group-list*)))))
+  (when-bind (message (send-command-get "groupList"
+                                        `(("sessionKey" . ,*session*))))
+    (setf *group-list* (make-array 3 :fill-pointer 0 :adjustable t))
+    (dolist (i (assoc-value message "data"))
+      (vector-push-extend (make-qq-group :id (assoc-value i "id")
+                                         :name (assoc-value i "name"))
+                          *group-list*))))
 
 (defun get-group-member (target)
   (send-command-get "memberList"
@@ -278,14 +275,12 @@
   (setf (gethash str *command-mode-active-map*) nil))
 
 (defun active-mode (str group)
-  (let ((mode (gethash str *command-mode-active-map*)))
-    (when mode
-      (vector-push-extend group (gethash str *command-mode-active-map*)))))
+  (when-bind (mode (gethash str *command-mode-active-map*))
+    (vector-push-extend group (gethash str *command-mode-active-map*))))
 
 (defun deactive-mode (str group)
-  (let ((mode (gethash str *command-mode-active-map*)))
-    (when mode
-      (setf (gethash str *command-mode-active-map*) (delete group mode)))))
+  (when-bind (mode (gethash str *command-mode-active-map*))
+    (setf (gethash str *command-mode-active-map*) (delete group mode))))
 
 (defun str-type (str)
   (let ((object (read-from-string str)))
@@ -306,19 +301,17 @@
 
 (defun handle-mode-message (text target sender)
   (when *is-repeat*
-    (let ((repeat (assoc-value *repeat-command* (first text))))
-      (when repeat
-        (send-text target repeat)))
+    (when-bind (repeat (assoc-value *repeat-command* (first text)))
+      (send-text target repeat))
     (maphash #'(lambda (k v)
                  (when (find target (gethash k *command-mode-active-map*))
                    (if (string= "help" (first text))
                        (send-text-lst target
                                       (mapcar #'(lambda (x) (car x)) v))
-                       (let ((command (assoc-value v (first text))))
-                         (when command
-                           (funcall command
+                       (when-bind (command (assoc-value v (first text)))
+                         (funcall command
                                     sender
-                                    (cdr text)))))))
+                                    (cdr text))))))
              *command-mode-map*)))
 
 (defun handle-command (text target sender)

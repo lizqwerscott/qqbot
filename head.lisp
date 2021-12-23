@@ -87,5 +87,10 @@
       (write-sequence bits out)))
   path)
 
+(defmacro when-bind ((var expr) &body body)
+  `(let ((,var ,expr))
+     (when ,var
+       ,@body)))
+
 (in-package :cl-user)
 

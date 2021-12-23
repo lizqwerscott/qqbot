@@ -19,7 +19,8 @@
    :lst-line-string
    :get-source-dir
    :generate-path
-   :save-l-picture))
+   :save-l-picture
+   :when-bind))
 
 (defpackage :qqbot.web
   (:use :common-lisp :drakma :qqbot.head :babel :jonathan)

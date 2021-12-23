@@ -24,10 +24,9 @@
       movie-urls))
 
 (defun searchBt (str)
-  (let ((result (getBt str)))
-    (when result
-      (save result)
-      (find-movie-url (lquery:$ (initialize (merge-pathnames "web/search.html" (get-source-dir))))))))
+  (when-bind (result (getBt str))
+    (save result)
+    (find-movie-url (lquery:$ (initialize (merge-pathnames "web/search.html" (get-source-dir)))))))
 
 (defun add-bt (url)
   (transmission-add *conn* :filename url))
