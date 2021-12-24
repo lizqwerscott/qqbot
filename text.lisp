@@ -54,6 +54,40 @@
       (assoc-value news "newslist")
       (format t "error:~A~%" (assoc-value news "msg"))))
 
+(defun get-zuan (&optional (level "min"))
+  "have two level:min and max"
+  (cl-json:decode-json-from-string (web-get "api.zuanbot.com"
+                                            "nmsl"
+                                            :args `(("level" . ,level)))))
+
+(defun get-chp ()
+  (cl-json:decode-json-from-string (web-get "api.zuanbot.com"
+                                            "chp")))
+
+(defun get-du ()
+  (cl-json:decode-json-from-string (web-get "api.zuanbot.com"
+                                            "du")))
+
+(defun handle-zbc (json)
+  (when-bind (data (cdr (assoc :data json)))
+    (cdr (assoc :text data))))
+
+(defun soul-load ()
+  (load-line-file (merge-pathnames "data/soulD.txt"
+                                   (get-source-dir))))
+
+(defun random-soul (souls)
+  (elt souls
+       (random-int-r (- (length souls) 1))))
+
+(defun get-duanzi ()
+  (cl-json:decode-json-from-string (web-post "www.yduanzi.com"
+                                             "duanzi/getduanzi")))
+
+(defun handle-duanzi (duanzi)
+  (when (assoc :success duanzi)
+    (split (cdr (assoc :duanzi duanzi)) "<br>")))
+
 (add-command "笑话"
              #'(lambda (sender args)
                  (send-text (target-id sender)
@@ -157,5 +191,60 @@
                                                             (assoc-value new "ctime")))
                                                 news))))
                      (send-text (target-id sender) "参数错误,例子:伊蕾娜 新闻 3 或者 伊蕾娜 新闻 3 疫苗"))))
+
+(defun text-to-self (sender args mode)
+  (handler-case (let ((zuan (format nil " ~A" (handle-zbc (case mode
+                                                            (0 (get-zuan))
+                                                            (1 (get-chp))
+                                                            (2 (get-du))))))
+                      (target (target-id sender)))
+                  (if (group-id sender)
+                      (send-at-text target
+                                    (sender-id sender)
+                                    zuan)
+                      (send-text target
+                                 zuan)))
+    (error (e)
+      (send-text (target-id sender) (format nil "~A" e)))))
+
+(add-command "骂我"
+             #'(lambda (sender args)
+                 (text-to-self sender args 0)))
+
+(add-command "夸我"
+             #'(lambda (sender args)
+                 (text-to-self sender args 1)))
+
+(add-command "鸡汤"
+             #'(lambda (sender args)
+                 (text-to-self sender args 2)))
+
+(add-command "舔狗日记"
+             #'(lambda (sender args)
+                 (send-text (target-id sender)
+                            (random-soul (soul-load)))))
+
+(add-command "网易云段子"
+             #'(lambda (sender args)
+                 (send-text-lst (target-id sender)
+                                (handle-duanzi (get-duanzi)))))
+
+(defun repeat-sb (sender args)
+    (handler-case (let ((zuan (format nil " ~A" (handle-zbc (get-zuan "max"))))
+                        (target (target-id sender)))
+                    (if (group-id sender)
+                        (send-at-text target
+                                      (sender-id sender)
+                                      zuan)
+                        (send-text target
+                                   zuan)))
+    (error (e)
+      (send-text (target-id sender) (format nil "~A" e)))))
+
+(add-command "sb"
+             #'repeat-sb)
+
+(add-command "傻逼"
+             #'repeat-sb)
 
 (in-package :cl-user)

@@ -111,7 +111,7 @@
    :time-in))
 
 (defpackage :qqbot.text
-  (:use :common-lisp :qqbot.bot :qqbot.web :qqbot.head)
+  (:use :common-lisp :qqbot.bot :qqbot.web :qqbot.head :cl-strings)
   (:export
    :get-random-text))
 
