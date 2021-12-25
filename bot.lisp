@@ -220,7 +220,7 @@
 
 (defun send-picture-and-text-lst (target url texts)
   (send-message target `(,(gmessage-picture url)
-                         ,(gmessage-text (lst-line-string text)))))
+                         ,(gmessage-text (lst-line-string texts)))))
 
 (defun send-music-share (target title summary jumpUrl pictureUrl musicUrl &optional (brief ""))
   (send-message target `(,(gmessage-music-share title summary jumpUrl pictureUrl musicUrl brief))))
