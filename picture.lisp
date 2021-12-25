@@ -131,7 +131,7 @@
                  (setf *remote* t)
                  (send-text (target-id sender) "开启")))
 
-(add-command "使用远程"
+(add-command "关闭远程"
              #'(lambda (sender args)
                  (setf *remote* nil)
                  (send-text (target-id sender) "关闭")))
