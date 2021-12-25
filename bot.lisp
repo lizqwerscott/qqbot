@@ -214,12 +214,12 @@
 (defun send-local-picture (target path)
   (send-message target `(,(gmessage-local-picture path))))
 
-(defun send-picture-and-text (target url text)
-  (send-message target `(,(gmessage-local-picture url)
+(defun send-picture-and-text (target path text)
+  (send-message target `(,(gmessage-local-picture path)
                          ,(gmessage-text text))))
 
-(defun send-picture-and-text-lst (target url texts)
-  (send-message target `(,(gmessage-picture url)
+(defun send-picture-and-text-lst (target path texts)
+  (send-message target `(,(gmessage-local-picture path)
                          ,(gmessage-text (lst-line-string texts)))))
 
 (defun send-music-share (target title summary jumpUrl pictureUrl musicUrl &optional (brief ""))

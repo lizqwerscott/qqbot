@@ -95,7 +95,7 @@
                (let ((result (check-picture image))
                      (target (parse-integer (car (last (pathname-directory image))))))
                  (send-picture-and-text-lst target
-                                            image
+                                            (namestring image)
                                             (mapcar #'(lambda (x)
                                                         (format nil
                                                                 "~A: ~A%"
