@@ -12,7 +12,12 @@
    :string-merges
    :string-include
    :bits-to-json
+
+   :get-directory
+   :directoryp
    :list-directory
+   :make-next-dir
+
    :load-line-file
    :load-json-file
    :save-json-file
@@ -20,6 +25,7 @@
    :get-source-dir
    :generate-path
    :save-l-picture
+   :save-picture-url
    :when-bind))
 
 (defpackage :qqbot.web
@@ -27,11 +33,15 @@
   (:export
    :generate-url
    :web-post
-   :web-get))
+   :web-get
+   :web-post-upload))
 
 (defpackage :qqbot.bot
   (:use :common-lisp :drakma :qqbot.head :babel :qqbot.web :patron :jonathan :cl-strings)
   (:export
+   :recive-picture
+   :recive-picture-off
+
    :people
    :make-people
    :people-id
@@ -59,6 +69,8 @@
    :send-text-lst
    :send-picture
    :send-local-picture
+   :send-picture-and-text
+   :send-picture-and-text-lst
    :send-music-share
    :send-json
    :send-at
@@ -121,7 +133,7 @@
   (:export))
 
 (defpackage :qqbot.picture
-  (:use :common-lisp :qqbot.bot :qqbot.head :qqbot.web :drakma)
+  (:use :common-lisp :qqbot.bot :qqbot.head :qqbot.web :drakma :patron)
   (:export
    :get-random-picture
    :save-picture

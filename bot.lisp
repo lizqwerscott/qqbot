@@ -16,6 +16,14 @@
 
 (defparameter *addres* "192.168.3.3:8080")
 
+(defparameter *recive-picture* nil)
+
+(defun recive-picture ()
+  (setf *recive-picture* t))
+
+(defun recive-picture-off ()
+  (setf *recive-picture* nil))
+
 (defun set-remote ()
   (setf *addres* "cn-zz-bgp-1.natfrp.cloud:11079"))
 
@@ -206,6 +214,14 @@
 (defun send-local-picture (target path)
   (send-message target `(,(gmessage-local-picture path))))
 
+(defun send-picture-and-text (target url text)
+  (send-message target `(,(gmessage-local-picture url)
+                         ,(gmessage-text text))))
+
+(defun send-picture-and-text-lst (target url texts)
+  (send-message target `(,(gmessage-picture url)
+                         ,(gmessage-text (lst-line-string text)))))
+
 (defun send-music-share (target title summary jumpUrl pictureUrl musicUrl &optional (brief ""))
   (send-message target `(,(gmessage-music-share title summary jumpUrl pictureUrl musicUrl brief))))
 
@@ -332,6 +348,17 @@
         (sender (assoc-value message "sender"))
         (target (target-id (assoc-value message "sender"))))
     (let ((first-str (first message-chain)))
+      (when (and *recive-picture*
+                 (string= "Image" (assoc-value first-str "type")))
+        (format t "is Image~%")
+        (let ((url (assoc-value first-str "url"))
+              (image-id (assoc-value first-str "imageId")))
+          (format t "save it:~A~%" image-id)
+          (let ((path (format nil "tmp/~A/" (target-id sender)))
+                (dir (pathname (format nil "~Atmp/~A/" (get-source-dir) (target-id sender)))))
+            (when (not (probe-file dir))
+              (ensure-directories-exist dir))
+            (save-picture-url url path image-id))))
       (if (string= "At" (assoc-value first-str "type"))
           (when (= 3027736450 (assoc-value first-str "target"))
             (when (and (second message-chain)

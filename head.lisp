@@ -41,6 +41,21 @@
 (defun list-directory (dir)
   (directory (make-pathname :name :wild :type :wild :defaults dir)))
 
+(defun get-directory (file)
+  (make-pathname :directory (pathname-directory file)))
+
+(defun directoryp (dir) 
+  (equal dir (get-directory dir)))
+
+(defun make-next-dir (dir-lst path)
+  "get the path/dir/"
+  (when (directoryp path)
+    (merge-pathnames (make-pathname :directory (append (list :relative)
+                                                       (if (stringp dir-lst)
+                                                           (list dir-lst)
+                                                           dir-lst)))
+                   path)))
+
 (defun run-shell (program)
   #+clozure (ccl:run-program "/bin/sh" (list "-c" (format nil "~A" program))))
 
@@ -86,6 +101,11 @@
     (when out
       (write-sequence bits out)))
   path)
+
+(defun save-picture-url (url path &optional (name nil))
+  (if name
+      (run-shell (format nil "wget ~A -O ~A~A/~A" url (get-source-dir) path name))
+      (run-shell (format nil "wget -P ~A~A/ ~A" (get-source-dir) path url))))
 
 (defmacro when-bind ((var expr) &body body)
   `(let ((,var ,expr))

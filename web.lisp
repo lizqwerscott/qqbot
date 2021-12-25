@@ -15,6 +15,16 @@
         (parse text :as :alist)
         text)))
 
+(defun web-post-upload (host command file &key (jsonp nil))
+  (let ((text (http-request (generate-url host command)
+                            :method :post
+                            :content-type "multipart/form-data"
+                            :parameters `(("image" . ,(pathname file)))
+                            :form-data t)))
+    (if jsonp
+        (parse text :as :alist)
+        text)))
+
 (defun web-get (host command &key args (jsonp nil))
   (let ((text (http-request (generate-url host command args)
                             :method :get)))
@@ -24,3 +34,4 @@
 
 
 (in-package :cl-user)
+
