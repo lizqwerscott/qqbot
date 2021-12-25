@@ -79,9 +79,12 @@
                        (send-text target "参数错误, 例子:伊蕾娜 qr hello")))))
 
 (defparameter *jance* nil)
+(defparameter *remote* nil)
 
 (defun check-picture (file)
-  (let ((data (web-post-upload "192.168.3.3:7612" "nsfw" file :jsonp t)))
+  (let ((data (web-post-upload (if *remote*
+                                   "192.168.3.50:7612"
+                                   "192.168.3.3:7612") "nsfw" file :jsonp t)))
     data))
 
 (defun setu-check ()
@@ -122,5 +125,16 @@
                  (recive-picture-off)
                  (setf *jance* nil)
                  (send-text (target-id sender) "关闭")))
+
+(add-command "使用远程"
+             #'(lambda (sender args)
+                 (setf *remote* t)
+                 (send-text (target-id sender) "开启")))
+
+(add-command "使用远程"
+             #'(lambda (sender args)
+                 (setf *remote* nil)
+                 (send-text (target-id sender) "关闭")))
+
 
 (in-package :cl-user)
