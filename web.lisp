@@ -25,11 +25,13 @@
         (parse text :as :alist)
         text)))
 
-(defun web-get (host command &key args (jsonp nil))
+(defun web-get (host command &key args (jsonp nil) (parse-method t))
   (let ((text (http-request (generate-url host command args)
                             :method :get)))
     (if jsonp
-        (parse text :as :alist)
+        (if parse-method
+            (parse text :as :alist)
+            (decode-json-from-string text))
         text)))
 
 

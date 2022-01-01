@@ -12,6 +12,9 @@
 (defun assoc-value (plist key)
   (cdr (assoc key plist :test #'string=)))
 
+(defun assoc-v (plist key)
+  (cdr (assoc key plist)))
+
 (defun split-s (str &optional (delimiter " "))
   (if (= 0 (length str)) nil
       (cl-strings:split str delimiter)))

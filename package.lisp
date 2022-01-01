@@ -7,6 +7,8 @@
    :run-shell
    :random-int-r
    :assoc-value
+   :assoc-v
+
    :split-s
    :string-merge
    :string-merges
@@ -29,6 +31,7 @@
    :when-bind))
 
 (defpackage :qqbot.web
+  (:import-from :cl-json :decode-json-from-string)
   (:use :common-lisp :drakma :qqbot.head :babel :jonathan)
   (:export
    :generate-url

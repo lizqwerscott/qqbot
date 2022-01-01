@@ -2,9 +2,9 @@
 
 (defun get-random-picture ()
   (let ((picture (web-get "api.vvhan.com" "api/acgimg"
-                          :args '(("type" . "json")) :jsonp t)))
-    (when (assoc-value picture "success")
-      (assoc-value picture "imgurl"))))
+                          :args '(("type" . "json")) :jsonp t :parse-method nil)))
+    (when (assoc-v picture :success)
+      (assoc-v picture :imgurl))))
 
 ;;tag is list
 (defun get-pixiv-picture (tag)
@@ -37,8 +37,10 @@
 
 (add-command "二次元图片"
              #'(lambda (sender args)
+                 (send-text (target-id sender) "获取中")
                  (let ((url (get-random-picture)))
                    (save-picture-url url "picture")
+                   (send-text (target-id sender) "上传中")
                    (send-picture (target-id sender)
                                  url)))
              "获取随机一张二次元图片")
