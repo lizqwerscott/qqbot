@@ -113,7 +113,6 @@
       (let ((message (car (last (fetch-last-message)))))
         (if message
             (let ((type (assoc-value message "type")))
-              (format t "message:~A~%" message)
               (format t "type:~A~%" type)
               (when (or (string= "FriendMessage" type) (string= "GroupMessage" type))
                 ;;(format t "message:~A~%" message)

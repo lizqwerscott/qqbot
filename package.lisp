@@ -40,7 +40,7 @@
    :web-post-upload))
 
 (defpackage :qqbot.bot
-  (:use :common-lisp :drakma :qqbot.head :babel :qqbot.web :patron :jonathan :cl-strings)
+  (:use :common-lisp :drakma :qqbot.head :babel :qqbot.web :patron :jonathan :cl-strings :local-time)
   (:export
    :recive-picture
    :recive-picture-off

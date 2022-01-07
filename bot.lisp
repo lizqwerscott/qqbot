@@ -244,7 +244,7 @@
 (defun sender-name (sender)
   (if (sender-groupp sender)
       (assoc-value sender "memberName")
-      (assoc-value sender "nickName")))
+      (assoc-value sender "nickname")))
 
 (defun group-id (sender)
   (assoc-value (sender-groupp sender) "id"))
@@ -262,7 +262,6 @@
     (dolist (i message-chain)
           (if (string= "Plain" (assoc-value i "type"))
               (let ((temp (assoc-value i "text")))
-                (format t "~A~%" temp)
                 (if (stringp temp)
                     (setf text temp)))))
     text))
@@ -315,6 +314,47 @@
                   (setf result (funcall (elt types i) object)))))
       result))))
 
+(defun print-message (sender message-chain type)
+  (format t
+          "message ~A say:--------------~%"
+          (cond ((string= "FriendMessage" type)
+                 (format nil
+                         "from ~A(~A)"
+                         (sender-name sender)
+                         (sender-id sender)))
+                ((string= "GroupMessage" type)
+                 (format nil
+                         "from ~A(~A) in ~A(~A)"
+                         (sender-name sender)
+                         (sender-id sender)
+                         (group-name sender)
+                         (group-id sender)))))
+  (let ((time (unix-to-timestamp (assoc-value (first message-chain)
+                                              "time"))))
+    (format t
+            "time: ~A年~A月~A号 ~A:~A:~A~%"
+            (timestamp-year time)
+            (timestamp-month time)
+            (timestamp-day time)
+            (timestamp-hour time)
+            (timestamp-minute time)
+            (timestamp-second time)))
+  (let* ((first-message (first (cdr message-chain)))
+         (message-type (assoc-value first-message "type")))
+    (cond ((string= "Plain" message-type)
+           (format t
+                   "text:~A~%"
+                   (assoc-value first-message "text")))
+          ((string= "Image" message-type)
+           (format t "Picture~%"))
+          ((string= "Face" message-type)
+           (format t
+                   "Face:~A(FaceId:~A)~%"
+                   (assoc-value first-message "name")
+                   (assoc-value first-message "faceId")))
+          (t (format t "Another:~A~%" message-type))))
+  (format t "---------------~%"))
+
 (defun handle-mode-message (text target sender)
   (when *is-repeat*
     (when-bind (repeat (assoc-value *repeat-command* (first text)))
@@ -347,6 +387,7 @@
         (text (get-text-message-chain (assoc-value message "messageChain")))
         (sender (assoc-value message "sender"))
         (target (target-id (assoc-value message "sender"))))
+    (print-message sender (assoc-value message "messageChain") type)
     (let ((first-str (first message-chain)))
       (when (and *recive-picture*
                  (string= "Image" (assoc-value first-str "type")))
