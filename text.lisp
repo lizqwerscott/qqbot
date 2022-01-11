@@ -86,7 +86,7 @@
 
 (defun handle-duanzi (duanzi)
   (when (assoc :success duanzi)
-    (split (cdr (assoc :duanzi duanzi)) "<br>")))
+    (split-s (cdr (assoc :duanzi duanzi)) "<br>")))
 
 (add-command "笑话"
              #'(lambda (sender args)

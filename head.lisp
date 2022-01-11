@@ -15,28 +15,16 @@
 (defun assoc-v (plist key)
   (cdr (assoc key plist)))
 
-(defun split-s (str &optional (delimiter " "))
-  (if (= 0 (length str)) nil
-      (cl-strings:split str delimiter)))
+(defun split-s (str &optional (deleimiter " "))
+  (split deleimiter str))
 
 (defun string-merge (str1 str2 delimiter)
   (if (or (equal str1 "") (equal str2 ""))
       (format nil "~A~A" str1 str2)
       (format nil "~A~A~A" str1 delimiter str2)))
 
-(defun string-merges (lst &optional (deleimiter "") (result ""))
-  (if lst
-      (string-merges (cdr lst) deleimiter (string-merge result (car lst) deleimiter))
-      result))
-
-(defun string-include (str include)
-  (when (and (stringp str) (stringp include) (>= (length str) (length include)))
-    (let ((result nil))
-      (dotimes (i (- (+ 1 (length str)) (length include)))
-        (when (not result)
-          (when (string= include (subseq str i (+ i (length include))))
-            (setf result t))))
-      result)))
+(defun string-merges (lst &optional (deleimiter ""))
+  (join deleimiter lst))
 
 (defun bits-to-json (bits)
   (jonathan:parse (babel:octets-to-string bits) :as :alist))

@@ -83,7 +83,7 @@
                 (send-text target "下一题")
                 (send-text target (next-miyu (group-id sender))))
               (progn
-                (if (string-include (second (play-miyu play)) (car args))
+                (if (contains? (car args) (second (play-miyu play)))
                     (send-text target "答案很接近了哟!!!")
                     (send-text target "答错了,再好好想一想吧")))))
       (send-text target "参数错误"))))

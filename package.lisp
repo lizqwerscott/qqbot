@@ -1,7 +1,7 @@
 (in-package :cl-user)
 
 (defpackage :qqbot.head
-  (:use :common-lisp :random-state :jonathan :babel)
+  (:use :common-lisp :random-state :jonathan :babel :str)
   (:export
    :*patron*
    :run-shell
@@ -12,7 +12,6 @@
    :split-s
    :string-merge
    :string-merges
-   :string-include
    :bits-to-json
 
    :get-directory
@@ -40,7 +39,7 @@
    :web-post-upload))
 
 (defpackage :qqbot.bot
-  (:use :common-lisp :drakma :qqbot.head :babel :qqbot.web :patron :jonathan :cl-strings :local-time)
+  (:use :common-lisp :drakma :qqbot.head :babel :qqbot.web :patron :jonathan :local-time)
   (:export
    :recive-picture
    :recive-picture-off
@@ -126,7 +125,7 @@
    :time-in))
 
 (defpackage :qqbot.text
-  (:use :common-lisp :qqbot.bot :qqbot.web :qqbot.head :cl-strings)
+  (:use :common-lisp :qqbot.bot :qqbot.web :qqbot.head)
   (:export
    :get-random-text))
 
@@ -148,7 +147,8 @@
    :searchBt))
 
 (defpackage :qqbot.card
-  (:use :common-lisp :qqbot.bot :qqbot.head :cl-ppcre)
+  (:import-from :cl-ppcre :scan-to-strings :regex-replace)
+  (:use :common-lisp :qqbot.bot :qqbot.head)
   (:export
    :handle-code
    :load-cards
@@ -156,7 +156,7 @@
    :draw-card))
 
 (defpackage :qqbot.game
-  (:use :common-lisp :qqbot.bot :qqbot.head)
+  (:use :common-lisp :qqbot.bot :qqbot.head :str)
   (:export))
 
 (defpackage :qqbot.song

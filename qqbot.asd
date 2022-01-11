@@ -9,6 +9,7 @@
                :purl
                :lquery
                :plump
+               :str
                :cl-strings
                :cl-json
                :cl-schedule

@@ -37,7 +37,7 @@
 (defparameter *parse-d-regx* "{.*?}")
 
 (defun code-regx (str regx)
-  (cl-ppcre:scan-to-strings regx str))
+  (scan-to-strings regx str))
 
 (defun remove-wrap (str)
   (subseq str 1 (- (length str) 1)))
@@ -55,7 +55,7 @@
   (let ((result str))
     (do ((code (code-regx result regx) (code-regx result regx)))
         ((not code) result)
-      (setf result (cl-ppcre:regex-replace regx result (funcall func (remove-wrap code)))))))
+      (setf result (regex-replace regx result (funcall func (remove-wrap code)))))))
 
 (defun draw-card-step (str data)
   (let ((result str))
