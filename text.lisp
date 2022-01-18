@@ -247,4 +247,47 @@
 (add-command "傻逼"
              #'repeat-sb)
 
+(defun time-format (timestamp)
+  (format-timestring nil
+                     timestamp
+                     :format '((:year 4)
+                               (:month 2)
+                               (:day 2))))
+
+(defun assoc-v (lst item)
+  (cdr (assoc item lst)))
+
+(defun mean-world (&optional (time "20210826"))
+  (let ((result (web-get "api.rosysun.cn" "60s"
+                         :args `(("date" . ,time))
+                         :jsonp t
+                         :parse-method nil)))
+    (assoc-v result :msg)))
+
+(add-command "看世界"
+             #'(lambda (sender args)
+                 (declare (ignore args))
+                 (send-text (target-id sender)
+                            (mean-world))))
+
+(defun re-ban (item)
+  (web-get "api.rosysun.cn" item :jsonp t :parse-method nil))
+
+(add-command "知乎热榜"
+             #'(lambda (sender args)
+                 (declare (ignore args))
+                 (let ((data (assoc-v (re-ban "zhihu") :data))
+                       (target (target-id sender)))
+                   (if data
+                       (dolist (i (subseq data 0 5))
+                         (send-text-lst target
+                                        (list (format nil
+                                                      "标题:~A"
+                                                      (assoc-v i :title))
+                                              (format nil
+                                                      "链接:~A"
+                                                      (assoc-v i :url))))
+                         (sleep 1))
+                       (send-text target "无法获取")))))
+
 (in-package :cl-user)

@@ -405,7 +405,7 @@
             (when (and (second message-chain)
                        (string= "Plain" (assoc-value (second message-chain) "type")))
               (format t "handle command:~S~%" (assoc-value (second message-chain) "text"))
-              (handle-command (split-s (trim (Assoc-value (second message-chain) "text")))
+              (handle-command (split-s (trim (assoc-value (second message-chain) "text")))
                               target
                               sender)))
           (when (string= "Plain" (assoc-value first-str "type"))

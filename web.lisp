@@ -7,7 +7,7 @@
       (setf str-args (string-merge str-args (string-merge (car i) (cdr i) "=") "&")))
     (format nil "~A~A" url str-args)))
 
-(defun web-post (host command &key args (jsonp t))
+(defun web-post (host command &key args (jsonp t) (parse-method t))
   (multiple-value-bind (bytes code headers)
       (http-request (generate-url host command)
                     :method :post
@@ -16,7 +16,9 @@
     (let ((content-type (cdr (assoc :content-type headers))))
       (if (and jsonp
                (str:starts-with-p "application/json" content-type))
-          (parse bytes :as :alist)
+          (if parse-method
+              (parse bytes :as :alist)
+              (decode-json-from-string bytes))
           bytes))))
 
 (defun web-post-upload (host command file &key (jsonp nil))

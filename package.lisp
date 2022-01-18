@@ -39,7 +39,7 @@
    :web-post-upload))
 
 (defpackage :qqbot.bot
-  (:use :common-lisp :drakma :qqbot.head :babel :qqbot.web :patron :jonathan :local-time)
+  (:use :common-lisp :drakma :qqbot.head :babel :qqbot.web :patron :jonathan :local-time :str)
   (:export
    :recive-picture
    :recive-picture-off
@@ -125,7 +125,7 @@
    :time-in))
 
 (defpackage :qqbot.text
-  (:use :common-lisp :qqbot.bot :qqbot.web :qqbot.head)
+  (:use :common-lisp :qqbot.bot :qqbot.web :qqbot.head :local-time)
   (:export
    :get-random-text))
 
