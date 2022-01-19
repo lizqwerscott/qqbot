@@ -316,7 +316,7 @@
 
 (defun print-message (sender message-chain type)
   (format t
-          "message ~A say:--------------~%"
+          "message ~A say:~%"
           (cond ((string= "FriendMessage" type)
                  (format nil
                          "from ~A(~A)"
@@ -352,7 +352,14 @@
                    "Face:~A(FaceId:~A)~%"
                    (assoc-value first-message "name")
                    (assoc-value first-message "faceId")))
-          (t (format t "Another:~A~%" message-type))))
+          ((string= "Forward" message-type)
+           (format t
+                   "Forward:~%")
+           (dolist (item (assoc-value first-message "nodeList"))
+             (dolist (i item)
+               (format t "    ~A:~A~%" (car i) (cdr i))
+               (format t "-----------~%"))))
+          (t (format t "Another:~A~%" message-chain))))
   (format t "---------------~%"))
 
 (defun handle-mode-message (text target sender)
