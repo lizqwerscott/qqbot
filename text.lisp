@@ -81,8 +81,8 @@
        (random-int-r (- (length souls) 1))))
 
 (defun get-duanzi ()
-  (cl-json:decode-json-from-string (web-post "www.yduanzi.com"
-                                             "duanzi/getduanzi")))
+  (cl-json:decode-json-from-string (web-post-json "www.yduanzi.com"
+                                                  "duanzi/getduanzi")))
 
 (defun handle-duanzi (duanzi)
   (when (assoc :success duanzi)
@@ -254,9 +254,6 @@
                                (:month 2)
                                (:day 2))))
 
-(defun assoc-v (lst item)
-  (cdr (assoc item lst)))
-
 (defun mean-world (&optional (time "20210826"))
   (let ((result (web-get "api.rosysun.cn" "60s"
                          :args `(("date" . ,time))
@@ -289,5 +286,24 @@
                                                       (assoc-v i :url))))
                          (sleep 1))
                        (send-text target "无法获取")))))
+
+(defun nbbhhsh-guess (text)
+  (let ((result (web-post "lab.magiconch.com"
+                    "api/nbnhhsh/guess"
+                    :args `(("text" . ,text))
+                    :jsonp t
+                    :isbyte nil)))
+    (format t "~A~%" result)
+    (assoc-value (car result) "trans")))
+
+(add-command "缩写"
+             #'(lambda (sender args)
+                 (let ((target (target-id sender)))
+                   (if (args-type args (list 'symbolp))
+                       (let ((lst (nbbhhsh-guess (car args))))
+                         (if lst
+                             (send-text-lst target lst)
+                             (send-text target "没有获取到")))
+                       (send-text target "需要一个参数")))))
 
 (in-package :cl-user)

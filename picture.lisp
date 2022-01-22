@@ -9,14 +9,14 @@
 ;;tag is list
 (defun get-pixiv-picture (tag)
   (handler-case
-      (let ((picture (web-post "api.lolicon.app"
-                               "setu/v2"
-                               :args `(("r18" . 1)
-                                       ("num" . 1)
-                                       ("size" . "original")
-                                       ("proxy" . nil)
-                                       ("tag" . ,tag))
-                               :jsonp t)))
+      (let ((picture (web-post-json "api.lolicon.app"
+                                    "setu/v2"
+                                    :args `(("r18" . 1)
+                                            ("num" . 1)
+                                            ("size" . "original")
+                                            ("proxy" . nil)
+                                            ("tag" . ,tag))
+                                    :jsonp t)))
     (format t "~A~%" picture)
     (if (string= "" (assoc-value picture "error"))
         (list (assoc-value (car (assoc-value picture "data")) "pid")

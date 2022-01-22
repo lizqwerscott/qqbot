@@ -111,7 +111,7 @@
       (format t "command error~%")))
 
 (defun send-command-post (command args)
-  (parse-data (web-post *addres* command :args args :jsonp t)))
+  (parse-data (web-post-json *addres* command :args args :jsonp t)))
 
 (defun send-command-get (command args)
   (parse-data (web-get *addres* command :args args :jsonp t)))
@@ -372,9 +372,13 @@
                        (send-text-lst target
                                       (mapcar #'(lambda (x) (car x)) v))
                        (when-bind (command (assoc-value v (first text)))
-                         (funcall command
-                                    sender
-                                    (cdr text))))))
+                         (handler-case
+                             (funcall command
+                                      sender
+                                      (cdr text))
+                           (error (c)
+                             (send-text target
+                                        (format nil "Error:~A" c))))))))
              *command-mode-map*)))
 
 (defun handle-command (text target sender)
@@ -382,9 +386,13 @@
       (submit-job *patron*
                   (make-instance 'patron:job
                                  :function (lambda ()
-                                             (funcall (gethash (first text) *command-map*)
-                                                      sender
-                                                      (cdr text)))))
+                                             (handler-case
+                                                 (funcall (gethash (first text) *command-map*)
+                                                          sender
+                                                          (cdr text))
+                                               (error (c)
+                                                 (send-text target
+                                                            (format nil "Error:~A" c)))))))
       (send-text target "没有这个命令哟!")))
 
 ;;handle signal message

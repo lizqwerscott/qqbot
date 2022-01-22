@@ -7,11 +7,27 @@
       (setf str-args (string-merge str-args (string-merge (car i) (cdr i) "=") "&")))
     (format nil "~A~A" url str-args)))
 
-(defun web-post (host command &key args (jsonp t) (parse-method t))
+(defun web-post-json (host command &key args (jsonp t) (parse-method t) (isbyte t))
   (multiple-value-bind (bytes code headers)
       (http-request (generate-url host command)
                     :method :post
-                    :content (string-to-octets (to-json args :from :alist)))
+                    :content (if isbyte
+                                 (string-to-octets (to-json args :from :alist))
+                                 (to-json args :from :alist)))
+    (declare (ignorable code))
+    (let ((content-type (cdr (assoc :content-type headers))))
+      (if (and jsonp
+               (str:starts-with-p "application/json" content-type))
+          (if parse-method
+              (parse bytes :as :alist)
+              (decode-json-from-string bytes))
+          bytes))))
+
+(defun web-post (host command &key args (jsonp t) (parse-method t) (isbyte t))
+  (multiple-value-bind (bytes code headers)
+      (http-request (generate-url host command)
+                    :method :post
+                    :parameters args)
     (declare (ignorable code))
     (let ((content-type (cdr (assoc :content-type headers))))
       (if (and jsonp

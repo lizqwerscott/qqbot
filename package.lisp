@@ -34,6 +34,7 @@
   (:use :common-lisp :drakma :qqbot.head :babel :jonathan)
   (:export
    :generate-url
+   :web-post-json
    :web-post
    :web-get
    :web-post-upload))
