@@ -136,7 +136,7 @@
   (:export))
 
 (defpackage :qqbot.picture
-  (:use :common-lisp :qqbot.bot :qqbot.head :qqbot.web :drakma :patron)
+  (:use :common-lisp :qqbot.bot :qqbot.head :qqbot.web :drakma :patron :babel :jonathan)
   (:export
    :get-random-picture
    :save-picture

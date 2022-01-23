@@ -34,6 +34,7 @@
 
 (add-command "问好"
 	     #'(lambda (sender args)
+                 (format t "args:~A~%" args)
 		 (let ((chenhu (if (is-master (sender-id sender)) "主人"
                                    (if (is-admin (sender-id sender)) "管理员"
                                        "陌生人"))))

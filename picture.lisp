@@ -138,5 +138,25 @@
                  (setf *remote* nil)
                  (send-text (target-id sender) "关闭")))
 
+(defun generate-moto (id)
+  (let ((json (parse
+               (octets-to-string
+                (web-post "192.168.3.3:8888" ""
+                          :args `(("id" . ,(format nil "~A" id)))))
+               :as :alist)))
+    (when (= 200 (assoc-value json "msg"))
+      (assoc-value json "path"))))
+
+(add-command "摸头"
+             #'(lambda (sender args)
+                 (if (and (car args)
+                          (string= "At" (assoc-value (car args) "type")))
+                     (let ((target (target-id sender))
+                           (id (assoc-value (car args) "target")))
+                       (format t "~A~%" id)
+                       (send-local-picture target
+                                           (generate-moto id)))
+                     (send-text (target-id sender) "参数错误"))))
+
 
 (in-package :cl-user)

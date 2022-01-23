@@ -420,7 +420,11 @@
             (when (and (second message-chain)
                        (string= "Plain" (assoc-value (second message-chain) "type")))
               (format t "handle command:~S~%" (assoc-value (second message-chain) "text"))
-              (handle-command (split-s (trim (assoc-value (second message-chain) "text")))
+              (handle-command (append (split-s
+                                       (trim
+                                        (assoc-value (second message-chain)
+                                                     "text")))
+                                      (cdr (cdr message-chain)))
                               target
                               sender)))
           (when (string= "Plain" (assoc-value first-str "type"))
@@ -432,7 +436,8 @@
                         (string= "伊蕾娜" (first message-text)))
                 (format t "handle command:~S~%" message-text)
                 (when (cdr message-text)
-                  (handle-command (cdr message-text)
+                  (handle-command (append (cdr message-text)
+                                          (cdr message-chain))
                                   target
                                   sender)))))))))
 
