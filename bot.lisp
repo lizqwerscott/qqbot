@@ -346,7 +346,7 @@
                    "text:~A~%"
                    (assoc-value first-message "text")))
           ((string= "Image" message-type)
-           (format t "Picture~%"))
+           (format t "Picture:~%url:~A~%" (assoc-value first-message "url")))
           ((string= "Face" message-type)
            (format t
                    "Face:~A(FaceId:~A)~%"

@@ -156,7 +156,8 @@
                        (format t "~A~%" id)
                        (send-local-picture target
                                            (generate-moto id)))
-                     (send-text (target-id sender) "参数错误"))))
+                     (send-local-picture (target-id sender)
+                                         (generate-moto (sender-id sender))))))
 
 
 (in-package :cl-user)
