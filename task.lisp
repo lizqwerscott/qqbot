@@ -112,4 +112,15 @@
                                          k))
                           *tasks*)))
 
+(defun is-reset (&optional (tasks *run-tasks*))
+  (if tasks
+      (if (not (task-runp (car tasks)))
+          (is-reset (cdr tasks)))
+      t))
+
+(defun reset-task-time ()
+  (dolist (i *run-tasks*)
+    (setf (task-runp i)
+          nil)))
+
 (in-package :cl-user)

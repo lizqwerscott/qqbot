@@ -123,7 +123,10 @@
    :get-time-range
    :time=
    :time-mintue=
-   :time-in))
+   :time-in
+
+   :is-reset
+   :reset-task-time))
 
 (defpackage :qqbot.text
   (:use :common-lisp :qqbot.bot :qqbot.web :qqbot.head :local-time)
