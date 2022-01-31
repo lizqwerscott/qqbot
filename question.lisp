@@ -1,15 +1,12 @@
 (in-package :qqbot.question)
 
-(defun search-get (url)
-  (decode-json-from-string (http-request url :method :get)))
-
 (defun search-ti (keyword)
-  (let ((json (search-get (format nil
-                               "http://tool.chaoxing.zmorg.cn/api/search.php?q=~A"
-                               (url-encode keyword)))))
-    (format t "ti:result:~A" json)
-    (when (= 1 (cdr (assoc :code json)))
-      (cdr (assoc :msg json)))))
+  (let ((json (web-get "tool.chaoxing.zmorg.cn/api/search.php"
+                       "api/search.php"
+                       :args `(("q" . ,keyword))
+                       :jsonp t)))
+    (when (= 1 (assoc-value json "code"))
+      (assoc-value json "msg"))))
 
 (add-command "查题"
              #'(lambda (sender args)

@@ -41,8 +41,7 @@
                                                        args)
                                          :method :get
                                          :additional-headers `(("cookie:" . ,*cookies*))
-                                         :user-agent *user-agent*))
-         :as :alist))
+                                         :user-agent *user-agent*))))
 
 (defun handle-search (message)
   (if (= 0 (assoc-value (assoc-value message "base_resp") "ret"))

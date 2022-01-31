@@ -3,7 +3,6 @@
                :drakma
                :cl-transmission
                :babel
-               :jonathan
                :bordeaux-threads
                :local-time
                :purl
@@ -11,7 +10,8 @@
                :plump
                :str
                :cl-strings
-               :cl-json
+               :yason
+               :jonathan
                :cl-schedule
                :cl-async
                :patron

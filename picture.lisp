@@ -2,9 +2,9 @@
 
 (defun get-random-picture ()
   (let ((picture (web-get "api.vvhan.com" "api/acgimg"
-                          :args '(("type" . "json")) :jsonp t :parse-method nil)))
-    (when (assoc-v picture :success)
-      (assoc-v picture :imgurl))))
+                          :args '(("type" . "json")) :jsonp t)))
+    (when (assoc-value picture "success")
+      (assoc-value picture "imgurl"))))
 
 ;;tag is list
 (defun get-pixiv-picture (tag)
@@ -142,8 +142,7 @@
   (let ((json (parse
                (octets-to-string
                 (web-post "192.168.3.3:8888" ""
-                          :args `(("id" . ,(format nil "~A" id)))))
-               :as :alist)))
+                          :args `(("id" . ,(format nil "~A" id))))))))
     (when (= 200 (assoc-value json "msg"))
       (assoc-value json "path"))))
 

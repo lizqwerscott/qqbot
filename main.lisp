@@ -66,7 +66,9 @@
               (send-text (get-master)
                          "主人晚安")
               (send-text 769649079
-                         "大家晚安哟!!!"))
+                         "大家晚安哟!!!")
+              (send-text 769649079
+                         (wanan)))
           "goodnight"
           (list 23 30))
 
@@ -79,6 +81,8 @@
 (defun goodmorning ()
   (send-text 769649079
              "大家早安, 伊蕾娜爱大家哟!!!")
+  (send-text 769649079
+             (zaoan))
   (send-at-text 769649079
                 1072881846
                 "主人!!!")

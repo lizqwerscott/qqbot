@@ -42,7 +42,7 @@
 
 (defun save-repeat ()
   (save-json-file (merge-pathnames "data/repeat.json" (get-source-dir))
-                  (jonathan:to-json *repeat-command* :from :alist)))
+                  (to-json-a *repeat-command*)))
 
 (defun add-repeat (repeat)
   (setf *repeat-command* (append *repeat-command* (list repeat)))
@@ -87,7 +87,7 @@
   (let ((lst nil))
     (dotimes (i (length *admin*))
       (setf lst (append lst (list (elt *admin* i)))))
-    (jonathan:to-json lst :from :alist)))
+    (to-json-a lst)))
 
 (defun save-admin ()
   (save-json-file (merge-pathnames "data/admin.json" (get-source-dir)) (sequence-to-json)))

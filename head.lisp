@@ -5,12 +5,23 @@
                                 :job-capacity 32
                                 :worker-timeout-duration 600))
 
+(setf yason:*parse-object-as* :alist)
+
+(defmacro when-bind ((var expr) &body body)
+  `(let ((,var ,expr))
+     (when ,var
+       ,@body)))
+
 (defun random-int-r (max)
   (let ((generator (random-state:make-generator :mersenne-twister-32 (ccl:current-time-in-nanoseconds))))
     (random-state:random-int generator 0 max)))
 
 (defun assoc-value (plist key)
-  (cdr (assoc key plist :test #'string=)))
+  (when-bind (value (cdr (assoc key plist :test #'string=)))
+    (if (and (listp value)
+             (= 1 (length value)))
+        (car value)
+        value)))
 
 (defun assoc-v (plist key)
   (cdr (assoc key plist)))
@@ -27,7 +38,7 @@
   (join deleimiter lst))
 
 (defun bits-to-json (bits)
-  (jonathan:parse (babel:octets-to-string bits) :as :alist))
+  (parse (babel:octets-to-string bits)))
 
 (defun list-directory (dir)
   (directory (make-pathname :name :wild :type :wild :defaults dir)))
@@ -63,7 +74,7 @@
   (with-open-file (in path :direction :input :if-does-not-exist :error)
     (multiple-value-bind (s) (make-string (file-length in))
       (read-sequence s in)
-      (jonathan:parse s :as :alist))))
+      (parse s))))
 
 (defun save-json-file (path json)
   (with-open-file (out path
@@ -98,10 +109,13 @@
       (run-shell (format nil "wget ~A -O ~A~A/~A" url (get-source-dir) path name))
       (run-shell (format nil "wget -P ~A~A/ ~A" (get-source-dir) path url))))
 
-(defmacro when-bind ((var expr) &body body)
-  `(let ((,var ,expr))
-     (when ,var
-       ,@body)))
+(defun to-json-a (alist)
+  (to-json alist :from :alist))
+
+(defun to-json-ss (alist)
+  (let ((out (make-string-output-stream)))
+    (encode-alist alist out)
+    (get-output-stream-string out)))
 
 (in-package :cl-user)
 

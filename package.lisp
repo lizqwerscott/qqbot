@@ -1,7 +1,8 @@
 (in-package :cl-user)
 
 (defpackage :qqbot.head
-  (:use :common-lisp :random-state :jonathan :babel :str)
+  (:import-from :jonathan :to-json)
+  (:use :common-lisp :random-state :yason :babel :str)
   (:export
    :*patron*
    :run-shell
@@ -27,11 +28,11 @@
    :generate-path
    :save-l-picture
    :save-picture-url
-   :when-bind))
+   :when-bind
+   :to-json-a))
 
 (defpackage :qqbot.web
-  (:import-from :cl-json :decode-json-from-string)
-  (:use :common-lisp :drakma :qqbot.head :babel :jonathan)
+  (:use :common-lisp :drakma :qqbot.head :babel :yason)
   (:export
    :generate-url
    :web-post-json
@@ -40,7 +41,7 @@
    :web-post-upload))
 
 (defpackage :qqbot.bot
-  (:use :common-lisp :drakma :qqbot.head :babel :qqbot.web :patron :jonathan :local-time :str)
+  (:use :common-lisp :drakma :qqbot.head :babel :qqbot.web :patron :yason :local-time :str)
   (:export
    :recive-picture
    :recive-picture-off
@@ -131,15 +132,16 @@
 (defpackage :qqbot.text
   (:use :common-lisp :qqbot.bot :qqbot.web :qqbot.head :local-time)
   (:export
-   :get-random-text))
+   :get-random-text
+   :zaoan
+   :wangan))
 
 (defpackage :qqbot.question
-  (:import-from :drakma :http-request)
-  (:use :common-lisp :qqbot.bot :qqbot.head :purl :cl-json)
+  (:use :common-lisp :qqbot.bot :qqbot.head :qqbot.web :yason)
   (:export))
 
 (defpackage :qqbot.picture
-  (:use :common-lisp :qqbot.bot :qqbot.head :qqbot.web :drakma :patron :babel :jonathan)
+  (:use :common-lisp :qqbot.bot :qqbot.head :qqbot.web :drakma :patron :babel :yason)
   (:export
    :get-random-picture
    :save-picture
@@ -167,7 +169,7 @@
   (:use :common-lisp :qqbot.bot :qqbot.head :qqbot.web))
 
 (defpackage :qqbot.weixgzh
-  (:use :common-lisp :qqbot.bot :qqbot.head :qqbot.web :bordeaux-threads :babel :drakma :jonathan :qqbot.task))
+  (:use :common-lisp :qqbot.bot :qqbot.head :qqbot.web :bordeaux-threads :babel :drakma :yason :qqbot.task))
 
 (defpackage :qqbot
   (:import-from :bordeaux-threads :make-thread)

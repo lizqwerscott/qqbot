@@ -41,8 +41,7 @@
            :args `(("key" . ,*tianx-key*)
                    ("num" . ,num)
                    ("rand". 1))
-           :jsonp t
-           :parse-method nil))
+           :jsonp t))
 
 (defun get-news (query num)
   (web-get "api.tianapi.com"
@@ -50,38 +49,36 @@
            :args `(("key" . ,*tianx-key*)
                    ("num" . ,num)
                    ("word". ,query))
-           :jsonp t
-           :parse-method nil))
+           :jsonp t))
 
 (defun handle-news (news)
-  (if (= 200 (assoc-v news :code))
-      (assoc-v news :newslist)
-      (format t "error:~A~%" (assoc-v news :msg))))
+  (if (= 200 (assoc-value news "code"))
+      (assoc-value news "newslist")
+      (format t "error:~A~%" (assoc-value news "msg"))))
 
 (defun get-zaoan ()
   (web-get "api.tianapi.com"
            "zaoan/index"
            :args `(("key" . ,*tianx-key*))
-           :jsonp t
-           :parse-method nil))
+           :jsonp t))
 
-(defun get-zuan (&optional (level "min"))
-  "have two level:min and max"
-  (cl-json:decode-json-from-string (web-get "api.zuanbot.com"
-                                            "nmsl"
-                                            :args `(("level" . ,level)))))
+(defun get-wangan ()
+  (web-get "api.tianapi.com"
+           "wanan/index"
+           :args `(("key" . ,*tianx-key*))
+           :jsonp t))
 
-(defun get-chp ()
-  (cl-json:decode-json-from-string (web-get "api.zuanbot.com"
-                                            "chp")))
+(defun handle-an (zaoan)
+  (if (= 200 (assoc-value zaoan "code"))
+      (assoc-value (assoc-value zaoan "newslist")
+                   "content")
+      (format t "error:~A~%" (assoc-value zaoan "msg"))))
 
-(defun get-du ()
-  (cl-json:decode-json-from-string (web-get "api.zuanbot.com"
-                                            "du")))
+(defun zaoan ()
+  (handle-an (get-zaoan)))
 
-(defun handle-zbc (json)
-  (when-bind (data (cdr (assoc :data json)))
-    (cdr (assoc :text data))))
+(defun wangan ()
+  (handle-an (get-wangan)))
 
 (defun soul-load ()
   (load-line-file (merge-pathnames "data/soulD.txt"
@@ -203,33 +200,6 @@
                                                 news))))
                      (send-text (target-id sender) "参数错误,例子:伊蕾娜 新闻 3 或者 伊蕾娜 新闻 3 疫苗"))))
 
-(defun text-to-self (sender args mode)
-  (handler-case (let ((zuan (format nil " ~A" (handle-zbc (case mode
-                                                            (0 (get-zuan))
-                                                            (1 (get-chp))
-                                                            (2 (get-du))))))
-                      (target (target-id sender)))
-                  (if (group-id sender)
-                      (send-at-text target
-                                    (sender-id sender)
-                                    zuan)
-                      (send-text target
-                                 zuan)))
-    (error (e)
-      (send-text (target-id sender) (format nil "~A" e)))))
-
-(add-command "骂我"
-             #'(lambda (sender args)
-                 (text-to-self sender args 0)))
-
-(add-command "夸我"
-             #'(lambda (sender args)
-                 (text-to-self sender args 1)))
-
-(add-command "鸡汤"
-             #'(lambda (sender args)
-                 (text-to-self sender args 2)))
-
 (add-command "舔狗日记"
              #'(lambda (sender args)
                  (send-text (target-id sender)
@@ -239,24 +209,6 @@
              #'(lambda (sender args)
                  (send-text-lst (target-id sender)
                                 (handle-duanzi (get-duanzi)))))
-
-(defun repeat-sb (sender args)
-    (handler-case (let ((zuan (format nil " ~A" (handle-zbc (get-zuan "max"))))
-                        (target (target-id sender)))
-                    (if (group-id sender)
-                        (send-at-text target
-                                      (sender-id sender)
-                                      zuan)
-                        (send-text target
-                                   zuan)))
-    (error (e)
-      (send-text (target-id sender) (format nil "~A" e)))))
-
-(add-command "sb"
-             #'repeat-sb)
-
-(add-command "傻逼"
-             #'repeat-sb)
 
 (defun time-format (timestamp)
   (format-timestring nil
@@ -268,9 +220,8 @@
 (defun mean-world (&optional (time "20210826"))
   (let ((result (web-get "api.rosysun.cn" "60s"
                          :args `(("date" . ,time))
-                         :jsonp t
-                         :parse-method nil)))
-    (assoc-v result :msg)))
+                         :jsonp t)))
+    (assoc-value result "msg")))
 
 (add-command "看世界"
              #'(lambda (sender args)
@@ -279,22 +230,22 @@
                             (mean-world))))
 
 (defun re-ban (item)
-  (web-get "api.rosysun.cn" item :jsonp t :parse-method nil))
+  (web-get "api.rosysun.cn" item :jsonp t))
 
 (add-command "知乎热榜"
              #'(lambda (sender args)
                  (declare (ignore args))
-                 (let ((data (assoc-v (re-ban "zhihu") :data))
+                 (let ((data (assoc-value (re-ban "zhihu") "data"))
                        (target (target-id sender)))
                    (if data
                        (dolist (i (subseq data 0 5))
                          (send-text-lst target
                                         (list (format nil
                                                       "标题:~A"
-                                                      (assoc-v i :title))
+                                                      (assoc-value i "title"))
                                               (format nil
                                                       "链接:~A"
-                                                      (assoc-v i :url))))
+                                                      (assoc-value i "url"))))
                          (sleep 1))
                        (send-text target "无法获取")))))
 
