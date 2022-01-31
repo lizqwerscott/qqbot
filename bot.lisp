@@ -398,12 +398,12 @@
 ;;handle signal message
 (defun handle-message (message)
   (let ((type (assoc-value message "type"))
-        (message-chain (cdr (assoc-value message "messageChain")))
-        (text (get-text-message-chain (assoc-value message "messageChain")))
+        (message-chain (assoc-value message "messageChain"))
         (sender (assoc-value message "sender"))
         (target (target-id (assoc-value message "sender"))))
     (print-message sender (assoc-value message "messageChain") type)
-    (let ((first-str (first message-chain)))
+    (format t "message-chain:~A~%" message-chain)
+    (let ((first-str (second message-chain)))
       (when (and *recive-picture*
                  (string= "Image" (assoc-value first-str "type")))
         (format t "is Image~%")
@@ -424,7 +424,7 @@
                                        (trim
                                         (assoc-value (second message-chain)
                                                      "text")))
-                                      (cdr (cdr message-chain)))
+                                      (cdr (cdr (cdr message-chain))))
                               target
                               sender)))
           (when (string= "Plain" (assoc-value first-str "type"))
@@ -437,7 +437,7 @@
                 (format t "handle command:~S~%" message-text)
                 (when (cdr message-text)
                   (handle-command (append (cdr message-text)
-                                          (cdr message-chain))
+                                          (cdr (cdr message-chain)))
                                   target
                                   sender)))))))))
 

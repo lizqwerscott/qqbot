@@ -17,11 +17,7 @@
     (random-state:random-int generator 0 max)))
 
 (defun assoc-value (plist key)
-  (when-bind (value (cdr (assoc key plist :test #'string=)))
-    (if (and (listp value)
-             (= 1 (length value)))
-        (car value)
-        value)))
+  (cdr (assoc key plist :test #'string=)))
 
 (defun assoc-v (plist key)
   (cdr (assoc key plist)))

@@ -70,7 +70,7 @@
 
 (defun handle-an (zaoan)
   (if (= 200 (assoc-value zaoan "code"))
-      (assoc-value (assoc-value zaoan "newslist")
+      (assoc-value (car (assoc-value zaoan "newslist"))
                    "content")
       (format t "error:~A~%" (assoc-value zaoan "msg"))))
 
@@ -89,12 +89,13 @@
        (random-int-r (- (length souls) 1))))
 
 (defun get-duanzi ()
-  (cl-json:decode-json-from-string (web-post-json "www.yduanzi.com"
-                                                  "duanzi/getduanzi")))
+  (web-get "www.yduanzi.com"
+           "duanzi/getduanzi"
+           :jsonp t))
 
 (defun handle-duanzi (duanzi)
-  (when (assoc :success duanzi)
-    (split-s (cdr (assoc :duanzi duanzi)) "<br>")))
+  (when (assoc-value duanzi "success")
+    (split-s (assoc-value duanzi "duanzi") "<br>")))
 
 (add-command "笑话"
              #'(lambda (sender args)
@@ -168,9 +169,7 @@
                      (send-text target (assoc-value siju "content"))
                      (send-text-lst target (list (format nil "类型:~A" (assoc-value siju "category"))
                                                  (format nil "来自:~A" (assoc-value siju "origin"))
-                                                 (format nil "作者:~A" (assoc-value siju "author"))))))))
-
-(add-command "自恋"
+                                                 (format nil "作者:~A" (assoc-value siju "author")))))))) (add-command "自恋"
              #'(lambda (sender args)
                  (dolist (line (zilie))
                    (let ((s-l (split-s line "|")))
