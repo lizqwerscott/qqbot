@@ -68,7 +68,7 @@
               (send-text 769649079
                          "大家晚安哟!!!"))
           "goodnight"
-          (get-time-range 23 30))
+          (list 23 30))
 
 (start-task "goodnight")
 
@@ -87,7 +87,7 @@
 
 (add-task #'goodmorning
           "goodmorning"
-          (get-time-range 7 0 :step-hour 3))
+          (list 7 0 :step-hour 3))
 
 (start-task "goodmorning")
 
@@ -110,7 +110,9 @@
         (reset-task-time))
       (dolist (task (run-tasks))
         (when (and (not (task-runp task))
-                   (apply #'time-in (task-time task)))
+                   (apply #'time-in
+                          (apply #'get-time-range
+                                 (task-time task))))
           (submit-job *patron*
                       (make-instance 'patron:job
                                      :function (task-func task)))

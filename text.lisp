@@ -33,26 +33,37 @@
 (defun zilie ()
   (load-line-file (generate-path "data/zilian.txt")))
 
+(defvar *tianx-key* "f07a432f84956febe20375736114244e")
+
 (defun get-random-news (num)
   (web-get "api.tianapi.com"
            "world/index"
-           :args `(("key" . "f07a432f84956febe20375736114244e")
+           :args `(("key" . ,*tianx-key*)
                    ("num" . ,num)
                    ("rand". 1))
-           :jsonp t))
+           :jsonp t
+           :parse-method nil))
 
 (defun get-news (query num)
   (web-get "api.tianapi.com"
            "world/index"
-           :args `(("key" . "f07a432f84956febe20375736114244e")
+           :args `(("key" . ,*tianx-key*)
                    ("num" . ,num)
                    ("word". ,query))
-           :jsonp t))
+           :jsonp t
+           :parse-method nil))
 
 (defun handle-news (news)
-  (if (= 200 (assoc-value news "code"))
-      (assoc-value news "newslist")
-      (format t "error:~A~%" (assoc-value news "msg"))))
+  (if (= 200 (assoc-v news :code))
+      (assoc-v news :newslist)
+      (format t "error:~A~%" (assoc-v news :msg))))
+
+(defun get-zaoan ()
+  (web-get "api.tianapi.com"
+           "zaoan/index"
+           :args `(("key" . ,*tianx-key*))
+           :jsonp t
+           :parse-method nil))
 
 (defun get-zuan (&optional (level "min"))
   "have two level:min and max"

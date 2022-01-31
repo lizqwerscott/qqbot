@@ -104,7 +104,7 @@
 
 (add-task #'weix-ciy-check
           "weix"
-          (get-time-range 10 1))
+          (list 10 1))
 
 (start-task "weix")
 
