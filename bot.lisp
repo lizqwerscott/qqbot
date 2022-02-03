@@ -402,7 +402,6 @@
         (sender (assoc-value message "sender"))
         (target (target-id (assoc-value message "sender"))))
     (print-message sender (assoc-value message "messageChain") type)
-    (format t "message-chain:~A~%" message-chain)
     (let ((first-str (second message-chain)))
       (when (and *recive-picture*
                  (string= "Image" (assoc-value first-str "type")))
@@ -417,12 +416,12 @@
             (save-picture-url url path image-id))))
       (if (string= "At" (assoc-value first-str "type"))
           (when (= 3027736450 (assoc-value first-str "target"))
-            (when (and (second message-chain)
-                       (string= "Plain" (assoc-value (second message-chain) "type")))
-              (format t "handle command:~S~%" (assoc-value (second message-chain) "text"))
+            (when (and (third message-chain)
+                       (string= "Plain" (assoc-value (third message-chain) "type")))
+              (format t "handle command:~S~%" (assoc-value (third message-chain) "text"))
               (handle-command (append (split-s
                                        (trim
-                                        (assoc-value (second message-chain)
+                                        (assoc-value (third message-chain)
                                                      "text")))
                                       (cdr (cdr (cdr message-chain))))
                               target

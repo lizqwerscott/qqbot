@@ -33,10 +33,20 @@
 (defun zilie ()
   (load-line-file (generate-path "data/zilian.txt")))
 
+(defvar *tian-address* "api.tianapi.com")
 (defvar *tianx-key* "f07a432f84956febe20375736114244e")
 
+(defun handle-tianx (data)
+  (if (= 200 (assoc-value data "code"))
+      (assoc-value data "newslist")
+      (let ((errormsg (format nil
+                             "[error][tianx]:~A"
+                             (assoc-value data "msg"))))
+        (format t "~A~%" errormsg)
+        (error errormsg))))
+
 (defun get-random-news (num)
-  (web-get "api.tianapi.com"
+  (web-get *tian-address*
            "world/index"
            :args `(("key" . ,*tianx-key*)
                    ("num" . ,num)
@@ -44,7 +54,7 @@
            :jsonp t))
 
 (defun get-news (query num)
-  (web-get "api.tianapi.com"
+  (web-get *tian-address*
            "world/index"
            :args `(("key" . ,*tianx-key*)
                    ("num" . ,num)
@@ -52,33 +62,83 @@
            :jsonp t))
 
 (defun handle-news (news)
-  (if (= 200 (assoc-value news "code"))
-      (assoc-value news "newslist")
-      (format t "error:~A~%" (assoc-value news "msg"))))
+  (handle-tianx news))
 
 (defun get-zaoan ()
-  (web-get "api.tianapi.com"
+  (web-get *tian-address*
            "zaoan/index"
            :args `(("key" . ,*tianx-key*))
            :jsonp t))
 
 (defun get-wanan ()
-  (web-get "api.tianapi.com"
+  (web-get *tian-address*
            "wanan/index"
            :args `(("key" . ,*tianx-key*))
            :jsonp t))
 
 (defun handle-an (zaoan)
-  (if (= 200 (assoc-value zaoan "code"))
-      (assoc-value (car (assoc-value zaoan "newslist"))
-                   "content")
-      (format t "error:~A~%" (assoc-value zaoan "msg"))))
+  (assoc-value (car (handle-tianx zaoan))
+               "content"))
 
 (defun zaoan ()
   (handle-an (get-zaoan)))
 
 (defun wanan ()
   (handle-an (get-wanan)))
+
+(defun get-today ()
+  (format-timestring nil
+                     (today)
+                     :format '((:month 2)
+                               (:day 2))))
+
+(defun get-history-today (date)
+  (web-get *tian-address*
+           "lishi/index"
+           :args `(("key" . ,*tianx-key*)
+                   ("date" . ,date))
+           :jsonp t))
+
+(defun handle-history-today (history)
+  (mapcar #'(lambda (item)
+              (list (assoc-value item "title")
+                    (assoc-value item "lsdate")))
+          (handle-tianx history)))
+
+(defun history-today (&optional (date (get-today)))
+  (handle-history-today (get-history-today date)))
+
+(defun append-n (lst &optional (result nil))
+  (if lst
+      (append-n (cdr lst)
+                (append result (car lst)))
+      result))
+
+(defun n-append (lst &optional (n 2) (result nil))
+  (if lst
+      (if (<= (length lst) n)
+          (n-append nil
+                    n
+                    (append result
+                            (list (append-n lst))))
+          (n-append (subseq lst n)
+                    n
+                    (append result
+                            (list (append-n (subseq lst 0 n))))))
+      result))
+
+(defun history-today-s (sender)
+  (let ((data (history-today)))
+    (when data
+      (dolist (i (n-append data 5))
+        (send-text-lst sender
+                       i)
+        (sleep 1)))))
+
+(add-command "历史上的今天"
+             #'(lambda (sender args)
+                 (declare (ignore args))
+                 (history-today-s (target-id sender))))
 
 (defun soul-load ()
   (load-line-file (merge-pathnames "data/soulD.txt"

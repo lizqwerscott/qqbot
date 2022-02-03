@@ -134,7 +134,9 @@
   (:export
    :get-random-text
    :zaoan
-   :wanan))
+   :wanan
+   :history-today
+   :history-today-s))
 
 (defpackage :qqbot.question
   (:use :common-lisp :qqbot.bot :qqbot.head :qqbot.web :yason)
