@@ -59,8 +59,17 @@
              #'(lambda (sender args)
                  (let ((target (target-id sender)))
                    (if (args-type args (list #'numberp))
-                       ()
-                       (send-text target "")))))
+                       (let ((num (parse-integer (car args))))
+                         (if (and (< num 60)
+                                  (>= num 1))
+                             (progn
+                               (sleep num))
+                             (sleep 3))
+                         (run-shell "reboot"))
+                       (progn
+                         (sleep 3)
+                         (run-shell "reboot")))))
+             "参数1 几秒后重启 默认3秒")
 
 (add-task #'(lambda ()
               (send-text (get-master)
