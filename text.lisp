@@ -62,7 +62,7 @@
            :args `(("key" . ,*tianx-key*))
            :jsonp t))
 
-(defun get-wangan ()
+(defun get-wanan ()
   (web-get "api.tianapi.com"
            "wanan/index"
            :args `(("key" . ,*tianx-key*))
@@ -77,8 +77,8 @@
 (defun zaoan ()
   (handle-an (get-zaoan)))
 
-(defun wangan ()
-  (handle-an (get-wangan)))
+(defun wanan ()
+  (handle-an (get-wanan)))
 
 (defun soul-load ()
   (load-line-file (merge-pathnames "data/soulD.txt"
