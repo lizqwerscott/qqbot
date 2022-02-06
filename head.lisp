@@ -12,6 +12,9 @@
      (when ,var
        ,@body)))
 
+(defun last1 (lst)
+  (car (last lst)))
+
 (defun random-int-r (max)
   (let ((generator (random-state:make-generator :mersenne-twister-32 (ccl:current-time-in-nanoseconds))))
     (random-state:random-int generator 0 max)))

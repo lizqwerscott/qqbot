@@ -34,4 +34,5 @@
                              (:file "miyu")))
                (:file "song")
                (:file "weixgzh")
+               (:file "minecraft")
                (:file "main")))

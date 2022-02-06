@@ -29,6 +29,7 @@
    :save-l-picture
    :save-picture-url
    :when-bind
+   :last1
    :to-json-a))
 
 (defpackage :qqbot.web
@@ -172,6 +173,9 @@
 
 (defpackage :qqbot.weixgzh
   (:use :common-lisp :qqbot.bot :qqbot.head :qqbot.web :bordeaux-threads :babel :drakma :yason :qqbot.task))
+
+(defpackage :qqbot.minecraft
+  (:use :common-lisp :qqbot.bot :qqbot.head :qqbot.web))
 
 (defpackage :qqbot
   (:import-from :bordeaux-threads :make-thread)

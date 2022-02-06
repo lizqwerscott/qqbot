@@ -14,7 +14,8 @@
                     :method :post
                     :content (if isbyte
                                  (string-to-octets (to-json-a args))
-                                 (to-json-a args)))
+                                 (to-json-a args))
+                    :content-type "application/json; charset=utf-8")
     (declare (ignorable code))
     (let ((content-type (cdr (assoc :content-type headers))))
       (if (and jsonp
