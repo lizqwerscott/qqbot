@@ -353,12 +353,15 @@
                    (assoc-value first-message "name")
                    (assoc-value first-message "faceId")))
           ((string= "Forward" message-type)
-           (format t
-                   "Forward:~%")
+           (format t "Forward:~%")
            (dolist (item (assoc-value first-message "nodeList"))
              (dolist (i item)
                (format t "    ~A:~A~%" (car i) (cdr i))
                (format t "-----------~%"))))
+          ((string= "At" message-type)
+           (format t
+                   "@~A~%"
+                   (assoc-value first-message "target")))
           (t (format t "Another:~A~%" message-chain))))
   (format t "---------------~%"))
 
@@ -392,7 +395,7 @@
                                                           (cdr text))
                                                (error (c)
                                                  (send-text target
-                                                            (format nil "Error:~A" c)))))))
+                                                            (format nil "[Error][run-command]:~A" c)))))))
       (send-text target "没有这个命令哟!")))
 
 ;;handle signal message
