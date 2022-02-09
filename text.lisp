@@ -127,18 +127,41 @@
                             (list (append-n (subseq lst 0 n))))))
       result))
 
-(defun history-today-s (sender)
+(defun history-today-s (sender &key (number 5) (page 0))
   (let ((data (history-today)))
     (when data
-      (dolist (i (n-append data 5))
-        (send-text-lst sender
-                       i)
-        (sleep 1)))))
+      (let ((pages (n-append data number)))
+        (if (= page 0)
+          (dolist (i pages)
+            (send-text-lst sender
+                           i)
+            (sleep 1))
+          (dotimes (i (min (length pages)
+                           page))
+            (send-text-lst sender
+                           (elt pages i))
+            (sleep 1)))))))
 
 (add-command "历史上的今天"
              #'(lambda (sender args)
                  (declare (ignore args))
                  (history-today-s (target-id sender))))
+
+(defun get-djt ()
+  (web-get *tian-address*
+           "dujitang/index"
+           :args `(("key" . ,*tianx-key*))
+           :jsonp t))
+
+(defun handle-djt (data)
+  (assoc-value (car (handle-tianx data))
+               "content"))
+
+(add-command "毒鸡汤"
+             #'(lambda (sender args)
+                 (declare (ignore args))
+                 (send-text (target-id sender)
+                            (handle-djt (get-djt)))))
 
 (defun soul-load ()
   (load-line-file (merge-pathnames "data/soulD.txt"

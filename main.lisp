@@ -97,7 +97,9 @@
                 "主人!!!")
   (send-text 769649079
              (get-random-text "love"))
-  (history-today-s 769649079))
+  (history-today-s 769649079
+                   :number 3
+                   :page 1))
 
 (add-task #'goodmorning
           "goodmorning"
