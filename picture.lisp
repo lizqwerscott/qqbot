@@ -81,11 +81,11 @@
                        (send-text target "参数错误, 例子:伊蕾娜 qr hello")))))
 
 (defparameter *jance* nil)
-(defparameter *remote* nil)
+(defparameter *remote* t)
 
 (defun check-picture (file)
   (let ((data (web-post-upload (if *remote*
-                                   "192.168.3.50:7612"
+                                   "124.222.100.66:7612"
                                    "192.168.3.3:7612") "nsfw" file :jsonp t)))
     data))
 
