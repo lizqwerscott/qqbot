@@ -417,31 +417,31 @@
             (when (not (probe-file dir))
               (ensure-directories-exist dir))
             (save-picture-url url path image-id))))
-      (if (string= "At" (assoc-value first-str "type"))
-          (when (= 3027736450 (assoc-value first-str "target"))
-            (when (and (third message-chain)
-                       (string= "Plain" (assoc-value (third message-chain) "type")))
-              (format t "handle command:~S~%" (assoc-value (third message-chain) "text"))
-              (handle-command (append (split-s
-                                       (trim
-                                        (assoc-value (third message-chain)
-                                                     "text")))
-                                      (cdr (cdr (cdr message-chain))))
+      (when (string= "At" (assoc-value first-str "type"))
+        (when (= 3027736450 (assoc-value first-str "target"))
+          (when (and (third message-chain)
+                     (string= "Plain" (assoc-value (third message-chain) "type")))
+            (format t "handle command:~S~%" (assoc-value (third message-chain) "text"))
+            (handle-command (append (split-s
+                                     (trim
+                                      (assoc-value (third message-chain)
+                                                   "text")))
+                                    (cdr (cdr (cdr message-chain))))
+                            target
+                            sender))))
+      (when (string= "Plain" (assoc-value first-str "type"))
+        (let ((message-text (split-s (trim (assoc-value first-str "text")))))
+          (handle-mode-message message-text
+                               target
+                               sender)
+          (when (or (string= "@伊蕾娜" (first message-text))
+                    (string= "伊蕾娜" (first message-text)))
+            (format t "handle command:~S~%" message-text)
+            (when (cdr message-text)
+              (handle-command (append (cdr message-text)
+                                      (cdr (cdr message-chain)))
                               target
-                              sender)))
-          (when (string= "Plain" (assoc-value first-str "type"))
-            (let ((message-text (split-s (trim (assoc-value first-str "text")))))
-              (handle-mode-message message-text
-                                   target
-                                   sender)
-              (when (or (string= "@伊蕾娜" (first message-text))
-                        (string= "伊蕾娜" (first message-text)))
-                (format t "handle command:~S~%" message-text)
-                (when (cdr message-text)
-                  (handle-command (append (cdr message-text)
-                                          (cdr (cdr message-chain)))
-                                  target
-                                  sender)))))))))
+                              sender))))))))
 
 (defun get-all-command ()
   (let ((result nil))
