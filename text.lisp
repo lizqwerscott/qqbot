@@ -350,4 +350,32 @@
                              (send-text target "没有获取到")))
                        (send-text target "需要一个参数")))))
 
+(defun homo (number)
+  (web-get "124.222.100.66:1145"
+           "homo"
+           :args `(("number" . ,number))))
+
+(add-command "恶臭论证"
+             #'(lambda (sender args)
+                 (let ((target (target-id sender))
+                       (query (car args)))
+                   (if query
+                       (cond ((string= "⑨" query)
+                              (send-text-lst target
+                                             (list "11-4-5+1-4"
+                                                   "我感觉你真是像⑨一样聪明(≧▽≦)")))
+                             ((or (string= "114514" query)
+                                  (string= "1919810" query))
+                              (send-text target
+                                         "这么臭的数字还有论证的必要吗？ baka ≧▽≦"))
+                             (t
+                              (let ((number (read-from-string query)))
+                                (if (numberp number)
+                                    (send-text target
+                                               (homo number))
+                                    (send-text target
+                                               "不要让我论证这么奇怪的东西呀！")))))
+                       (send-text target
+                                  "请输入要论证的数字baka")))))
+
 (in-package :cl-user)
