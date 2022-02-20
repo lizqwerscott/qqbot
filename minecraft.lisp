@@ -129,9 +129,9 @@
            (append1 (cdr instance)
                     "restart"))))
 
-(defun i-info ()
+(defun i-info (&optional (index 0))
   (when-bind (info (apply #'instance-info
-                          (cdr (car *instances*))))
+                          (cdr (elt *instances* index))))
     (list (assoc-value info "status")
           (assoc-value (assoc-value info
                                     "config")
@@ -171,10 +171,11 @@
 (add-command "mc状态"
              #'(lambda (sender args)
                  (declare (ignore args))
-                 (let ((data (i-info))
+                 (dotimes (i (length *instances*))
+                   (let ((data (i-info i))
                        (target (target-id sender)))
                    (send-text target
-                              (format nil "服务器名:~A" (elt data 1)))
+                              (format nil "(~A)服务器名:~A" i (elt data 1)))
                    (sleep 0.5)
                    (case (instance-status (first data)
                                           (last1 data))
@@ -197,34 +198,46 @@
                       (send-text target
                                  (format nil
                                          "服务器状态异常:~A~%"
-                                         (first data))))))))
+                                         (first data)))))))))
+
+(defun get-index (args)
+  (let ((index (car args)))
+    (if index
+        (parse-integer index)
+        0)))
 
 (add-command "mc开启"
              #'(lambda (sender args)
-                 (let ((result (instance-start 0)))
-                   (if result
-                       (send-text (target-id sender)
-                                  "开启成功")
-                       (send-text (target-id sender)
-                                  "失败")))))
+                 (let ((index (get-index args))
+                       (target (target-id sender)))
+                   (let ((result (instance-start index)))
+                     (if result
+                         (send-text target
+                                    "开启成功")
+                         (send-text target
+                                    "失败"))))))
 
 (add-command "mc关闭"
              #'(lambda (sender args)
-                 (let ((result (instance-stop 0)))
-                   (if result
-                       (send-text (target-id sender)
-                                  "关闭成功")
-                       (send-text (target-id sender)
-                                  "失败")))))
+                 (let ((index (get-index args))
+                       (target (target-id sender)))
+                   (let ((result (instance-stop index)))
+                     (if result
+                         (send-text target
+                                    "关闭成功")
+                         (send-text target
+                                    "失败"))))))
 
 (add-command "mc重启"
              #'(lambda (sender args)
-                 (let ((result (instance-restart 0)))
-                   (if result
-                       (send-text (target-id sender)
-                                  "重启成功")
-                       (send-text (target-id sender)
-                                  "重启失败")))))
+                 (let ((index (get-index args))
+                       (target (target-id sender)))
+                   (let ((result (instance-restart index)))
+                     (if result
+                         (send-text target
+                                    "重启成功")
+                         (send-text target
+                                    "重启失败"))))))
 
 (add-command "服务器数据"
              #'(lambda (sender args)
