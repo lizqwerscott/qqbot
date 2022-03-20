@@ -179,5 +179,5 @@
 
 (defpackage :qqbot
   (:import-from :bordeaux-threads :make-thread)
-  (:use :common-lisp :qqbot.head :qqbot.bot :qqbot.card :qqbot.task :qqbot.weixgzh :qqbot.text :local-time :cl-schedule :patron :cl-async)
+  (:use :common-lisp :qqbot.head :qqbot.bot :qqbot.web :qqbot.card :qqbot.task :qqbot.weixgzh :qqbot.text :local-time :cl-schedule :patron :cl-async)
   (:export :start))

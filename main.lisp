@@ -71,12 +71,15 @@
                          (run-shell "reboot")))))
              "参数1 几秒后重启 默认3秒")
 
+(defvar *main-qq-group* 769649079)
+(defvar *lui-qq* 1072881846)
+
 (add-task #'(lambda ()
               (send-text (get-master)
                          "主人晚安")
-              (send-text 769649079
+              (send-text *main-qq-group*
                          "大家晚安哟!!!")
-              (send-text 769649079
+              (send-text *main-qq-group*
                          (wanan)))
           "goodnight"
           (list 23 30))
@@ -88,16 +91,16 @@
                 "hello")
 
 (defun goodmorning ()
-  (send-text 769649079
+  (send-text *main-qq-group*
              "大家早安, 伊蕾娜爱大家哟!!!")
-  (send-text 769649079
+  (send-text *main-qq-group*
              (zaoan))
-  (send-at-text 769649079
-                1072881846
+  (send-at-text *main-qq-group*
+                *lui-qq*
                 "主人!!!")
-  (send-text 769649079
+  (send-text *main-qq-group*
              (get-random-text "love"))
-  (history-today-s 769649079
+  (history-today-s *main-qq-group*
                    :number 3
                    :page 1))
 
@@ -106,6 +109,37 @@
           (list 7 0 :step-hour 3))
 
 (start-task "goodmorning")
+
+(defvar *uvCode* 112420)
+(defvar *userId* 96212)
+
+(defun get-id ()
+  (web-get "mhealthyup.yingxinbao.net"
+           "welcome/publish/mobile/healthy/config/modules/details"
+           :args `(("uvCode" . ,*uvcode*)
+                   ("mcode" . "dayUp")
+                   ("userId" . ,*userId*))
+           :jsonp t))
+
+(defun publish ()
+  (web-post-json "mhealthyup.yingxinbao.net"
+                 "welcome/publish/mobile/healthy/config/modules/save"
+                 :args (get-id)
+                 :jsonp t))
+
+(defun health-up ()
+  (send-at-text *main-qq-group*
+                (get-master)
+                " 主人, 正在为你上传健康打卡信息.")
+  (let ((result (publish)))
+    (send-text *main-qq-group*
+               (assoc-value result "msg"))))
+
+(add-task #'health-up
+          "healthup"
+          (list 7 30 :step-hour 2))
+
+(start-task "healthup")
 
 (defun run ()
   (format t "Start patron...~%")
