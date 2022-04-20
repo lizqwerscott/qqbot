@@ -358,6 +358,10 @@
              (dolist (i item)
                (format t "    ~A:~A~%" (car i) (cdr i))
                (format t "-----------~%"))))
+          ((string= "App" message-type)
+           (format t
+                   "~A~%"
+                   (parse (assoc-value first-message "content"))))
           ((string= "At" message-type)
            (format t
                    "@~A~%"
@@ -441,7 +445,23 @@
               (handle-command (append (cdr message-text)
                                       (cdr (cdr message-chain)))
                               target
-                              sender))))))))
+                              sender)))))
+      (when (string= "App" (assoc-value first-str "type"))
+        (let ((content (parse (assoc-value first-str "content"))))
+          (if (string= "哔哩哔哩" (assoc-value content "desc"))
+              (let ((data (cdr (car (assoc-value content "meta")))))
+                (send-text-lst target
+                               (list
+                                (format nil "哔哩哔哩分享")
+                                (format nil "~A" (assoc-value data "desc"))
+                                (format nil
+                                        "链接: ~A"
+                                        (let ((url (assoc-value data "qqdocurl")))
+                                          (subseq url
+                                                  0
+                                                  (position "?"
+                                                            url
+                                                            :test #'string=)))))))))))))
 
 (defun get-all-command ()
   (let ((result nil))

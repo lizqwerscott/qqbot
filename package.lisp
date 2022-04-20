@@ -33,6 +33,7 @@
    :to-json-a))
 
 (defpackage :qqbot.web
+  (:import-from :quri :make-uri)
   (:use :common-lisp :drakma :qqbot.head :babel :yason)
   (:export
    :generate-url
@@ -176,6 +177,9 @@
 
 (defpackage :qqbot.minecraft
   (:use :common-lisp :qqbot.bot :qqbot.head :qqbot.web))
+
+(defpackage :qqbot.wiki
+  (:use :common-lisp :qqbot.bot :qqbot.head :qqbot.web :yason))
 
 (defpackage :qqbot
   (:import-from :bordeaux-threads :make-thread)

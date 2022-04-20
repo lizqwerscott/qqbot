@@ -45,9 +45,12 @@
         (parse text)
         text)))
 
+(defun make-url (host command args)
+  (make-uri :defaults (generate-url host command)
+            :query args))
+
 (defun web-get (host command &key args (jsonp nil))
-  (let ((text (http-request (generate-url host command args)
-                            :method :get)))
+  (let ((text (dex:get (make-url host command args))))
     (if jsonp
         (parse text)
         text)))
