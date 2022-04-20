@@ -34,7 +34,9 @@
       (format nil "~A~A~A" str1 delimiter str2)))
 
 (defun string-merges (lst &optional (deleimiter ""))
-  (join deleimiter lst))
+  (if (= (length lst) 1)
+      (car lst)
+      (join deleimiter lst)))
 
 (defun bits-to-json (bits)
   (parse (babel:octets-to-string bits)))

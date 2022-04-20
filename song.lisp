@@ -7,8 +7,8 @@
         (format t "error-song:~A~%" data))))
 
 (defun search-song (songname &optional (limit 3))
-  (parse-data (web-get "127.0.0.1:3000" "cloudsearch"
-                       :args `(("keywords" . ,(purl:url-encode songname))
+  (parse-data (web-get "192.168.3.3:3000" "cloudsearch"
+                       :args `(("keywords" . ,songname)
                                ("type" . 1)
                                ("limit" . ,limit))
                        :jsonp t)))
@@ -26,7 +26,7 @@
               songs)))
 
 (defun get-mp3 (id)
-  (parse-data (web-get "127.0.0.1:3000" "song/url" :args `(("id" . ,id)) :jsonp t) "data"))
+  (parse-data (web-get "192.168.3.3:3000" "song/url" :args `(("id" . ,id)) :jsonp t) "data"))
 
 (defun get-url (mp3)
   (list (assoc-value mp3 "url")))
@@ -35,10 +35,13 @@
              #'(lambda (sender args)
                  (if (args-type args (list #'numberp #'symbolp))
                      (let ((target (target-id sender))
-                           (result (search-song (string-merges (cdr args) " ")
+                           (result (search-song (string-merges (cdr args)
+                                                               " ")
                                                 (first args))))
-                       (if result
+                       (if (and result
+                                (> (assoc-value result "songCount") 0))
                            (let ((songs (get-info-song result)))
+                             (format t "aa~%")
                              (dolist (song songs)
                                (format t "song:~A~%" song)
                                (let ((mp3 (get-mp3 (assoc-value song "id"))))
@@ -50,7 +53,7 @@
                                                  (format nil "https://music.163.com/#/song?id=~A" (assoc-value song "id"))
                                                  (assoc-value song "picUrl")
                                                  url))))))
-                           (send-message target "没有搜索到这个歌曲呢!")))
+                           (send-text target "没有搜索到这个歌曲呢!")))
                      (send-text (target-id sender) "参数错误")))
              "网易云搜索歌曲 第一个参数为返回的歌曲数量, 剩下的参数是歌曲关键字")
 
