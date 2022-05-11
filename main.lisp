@@ -86,6 +86,15 @@
 
 (start-task "goodnight")
 
+(add-task #'(lambda ()
+              (send-text *main-qq-group*
+                         "睡觉!!!")
+              (run-shell "sudo x708softsd.sh"))
+          "goodsleep"
+          (list 1 0))
+
+(start-task "goodsleep")
+
 (add-start-task #'(lambda ()
                     (send-text (get-master) "伊蕾娜起床了!!!"))
                 "hello")
