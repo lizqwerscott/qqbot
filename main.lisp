@@ -123,6 +123,9 @@
 (setf (gethash 814071892 *helath-info*)
       '(96992 112420))
 
+(setf (gethash 2497673604 *helath-info*)
+      '(95256 112420))
+
 (defun get-id (user-id uv-code)
   (web-get "mhealthyup.yingxinbao.net"
            "welcome/publish/mobile/healthy/config/modules/details"
@@ -131,10 +134,15 @@
                    ("userId" . ,user-id))
            :jsonp t))
 
+(defun set-temparture (json &optional (temparture 36.2))
+  (setf (cdr (car (last (car (cdr (car json))))))
+        temparture)
+  json)
+
 (defun publish (user-id uv-code)
   (web-post-json "mhealthyup.yingxinbao.net"
                  "welcome/publish/mobile/healthy/config/modules/save"
-                 :args (get-id user-id uv-code)
+                 :args (set-temparture (get-id user-id uv-code))
                  :jsonp t))
 
 (defun health-up-all ()
