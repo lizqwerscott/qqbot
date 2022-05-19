@@ -165,7 +165,7 @@
 
 (add-task #'health-up
           "healthup"
-          (list 7 30 :step-hour 2))
+          (list 8 0 :step-hour 2))
 
 (start-task "healthup")
 
