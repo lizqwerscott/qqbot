@@ -149,6 +149,7 @@
   (maphash #'(lambda (people v)
                (send-text people
                           "正在为您上传健康打卡信息")
+               (apply #'publish v)
                (let ((result (apply #'publish v)))
                  (send-text people
                             (assoc-value result "msg"))))
@@ -158,6 +159,7 @@
   (send-at-text *main-qq-group*
                 (get-master)
                 " 主人, 正在为您上传健康打卡信息.")
+  (publish 96212 112420)
   (let ((result (publish 96212 112420)))
     (send-text *main-qq-group*
                (assoc-value result "msg")))
