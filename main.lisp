@@ -111,7 +111,8 @@
              (get-random-text "love"))
   (history-today-s *main-qq-group*
                    :number 3
-                   :page 1))
+                   :page 1)
+  (moyu *main-qq-group*))
 
 (add-task #'goodmorning
           "goodmorning"

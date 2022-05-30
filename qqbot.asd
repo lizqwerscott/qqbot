@@ -38,4 +38,5 @@
                (:file "weixgzh")
                (:file "minecraft")
                (:file "wiki")
+               (:file "moyu")
                (:file "main")))

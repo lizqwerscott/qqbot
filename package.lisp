@@ -181,7 +181,12 @@
 (defpackage :qqbot.wiki
   (:use :common-lisp :qqbot.bot :qqbot.head :qqbot.web :yason))
 
+(defpackage :qqbot.moyu
+  (:use :common-lisp :qqbot.bot :qqbot.head :qqbot.web)
+  (:export
+   :moyu))
+
 (defpackage :qqbot
   (:import-from :bordeaux-threads :make-thread)
-  (:use :common-lisp :qqbot.head :qqbot.bot :qqbot.web :qqbot.card :qqbot.task :qqbot.weixgzh :qqbot.text :local-time :cl-schedule :patron :cl-async)
+  (:use :common-lisp :qqbot.head :qqbot.bot :qqbot.web :qqbot.card :qqbot.task :qqbot.weixgzh :qqbot.text :qqbot.moyu :local-time :cl-schedule :patron :cl-async)
   (:export :start))
