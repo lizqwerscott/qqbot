@@ -127,6 +127,9 @@
 (setf (gethash 2497673604 *helath-info*)
       '(95256 112420))
 
+(setf (gethash 1501319877 *helath-info*)
+      '(182437 112420))
+
 (defun get-id (user-id uv-code)
   (web-get "mhealthyup.yingxinbao.net"
            "welcome/publish/mobile/healthy/config/modules/details"
