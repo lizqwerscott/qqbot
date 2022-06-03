@@ -25,7 +25,7 @@
           :test #'=)))
 
 (defun load-miyu ()
-  (let ((str (load-line-file (merge-pathnames "data/谜语.txt"
+  (let ((str (load-line-file (merge-pathnames "datas/data/谜语.txt"
                                               (get-source-dir)))))
     (mapcar #'(lambda (line)
                 (split-s line ":"))

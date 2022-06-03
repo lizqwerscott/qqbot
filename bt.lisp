@@ -15,7 +15,7 @@
 
 (defun save (bytes)
   (when bytes
-    (with-open-file (in (merge-pathnames "web/search.html" (get-source-dir)) :direction :output :if-exists :supersede :element-type '(unsigned-byte 8))
+    (with-open-file (in (merge-pathnames "datas/web/search.html" (get-source-dir)) :direction :output :if-exists :supersede :element-type '(unsigned-byte 8))
      (when in
        (write-sequence bytes in)))))
 
@@ -26,7 +26,7 @@
 (defun searchBt (str)
   (when-bind (result (getBt str))
     (save result)
-    (find-movie-url (lquery:$ (initialize (merge-pathnames "web/search.html" (get-source-dir)))))))
+    (find-movie-url (lquery:$ (initialize (merge-pathnames "datas/web/search.html" (get-source-dir)))))))
 
 (defun add-bt (url)
   (transmission-add *conn* :filename url))

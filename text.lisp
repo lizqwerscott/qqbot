@@ -3,7 +3,7 @@
 (defparameter *mi-yan* nil)
 
 (defun load-miyan ()
-  (load-json-file (merge-pathnames "data/名言.json"
+  (load-json-file (merge-pathnames "datas/data/名言.json"
                                    (get-source-dir))))
 
 (setf *mi-yan* (load-miyan))
@@ -23,15 +23,15 @@
   (web-get "v1.jinrishici.com" fenlei :jsonp t))
 
 (defun bullet-fly-load ()
-  (load-line-file (merge-pathnames "data/bullet.txt"
+  (load-line-file (merge-pathnames "datas/data/bullet.txt"
                                    (get-source-dir))))
 
 (defun two-bread ()
-  (load-line-file (merge-pathnames "data/twobread.txt"
+  (load-line-file (merge-pathnames "datas/data/twobread.txt"
                                    (get-source-dir))))
 
 (defun zilie ()
-  (load-line-file (generate-path "data/zilian.txt")))
+  (load-line-file (generate-path "datas/data/zilian.txt")))
 
 (defvar *tian-address* "api.tianapi.com")
 (defvar *tianx-key* "f07a432f84956febe20375736114244e")
@@ -164,7 +164,7 @@
                             (handle-djt (get-djt)))))
 
 (defun soul-load ()
-  (load-line-file (merge-pathnames "data/soulD.txt"
+  (load-line-file (merge-pathnames "datas/data/soulD.txt"
                                    (get-source-dir))))
 
 (defun random-soul (souls)

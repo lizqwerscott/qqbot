@@ -36,12 +36,12 @@
   name)
 
 (defun load-repeat ()
-  (setf *repeat-command* (load-json-file (merge-pathnames "data/repeat.json" (get-source-dir)))))
+  (setf *repeat-command* (load-json-file (merge-pathnames "datas/data/repeat.json" (get-source-dir)))))
 
 (load-repeat)
 
 (defun save-repeat ()
-  (save-json-file (merge-pathnames "data/repeat.json" (get-source-dir))
+  (save-json-file (merge-pathnames "datas/data/repeat.json" (get-source-dir))
                   (to-json-a *repeat-command*)))
 
 (defun add-repeat (repeat)
@@ -90,10 +90,10 @@
     (to-json-a lst)))
 
 (defun save-admin ()
-  (save-json-file (merge-pathnames "data/admin.json" (get-source-dir)) (sequence-to-json)))
+  (save-json-file (merge-pathnames "datas/data/admin.json" (get-source-dir)) (sequence-to-json)))
 
 (defun load-admin ()
-  (let ((admin (load-json-file (merge-pathnames "data/admin.json" (get-source-dir)))))
+  (let ((admin (load-json-file (merge-pathnames "datas/data/admin.json" (get-source-dir)))))
     (mapcar #'(lambda (x)
                 (setf *admin* (make-array 3 :fill-pointer 0 :adjustable 1))
                 (vector-push-extend x *admin*))
@@ -416,8 +416,8 @@
         (let ((url (assoc-value first-str "url"))
               (image-id (assoc-value first-str "imageId")))
           (format t "save it:~A~%" image-id)
-          (let ((path (format nil "tmp/~A/" (target-id sender)))
-                (dir (pathname (format nil "~Atmp/~A/" (get-source-dir) (target-id sender)))))
+          (let ((path (format nil "datas/tmp/~A/" (target-id sender)))
+                (dir (pathname (format nil "~Adatas/tmp/~A/" (get-source-dir) (target-id sender)))))
             (when (not (probe-file dir))
               (ensure-directories-exist dir))
             (save-picture-url url path image-id))))

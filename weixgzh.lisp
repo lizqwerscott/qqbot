@@ -1,7 +1,7 @@
 (in-package :qqbot.weixgzh)
 
 (defun load-cookies ()
-  (with-open-file (in (generate-path "data/cookies.txt"))
+  (with-open-file (in (generate-path "datas/data/cookies.txt"))
     (when in
       (read-line in))))
 

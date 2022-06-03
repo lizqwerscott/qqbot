@@ -39,7 +39,7 @@
              #'(lambda (sender args)
                  (send-text (target-id sender) "获取中")
                  (let ((url (get-random-picture)))
-                   (save-picture-url url "picture")
+                   (save-picture-url url "datas/picture")
                    (send-text (target-id sender) "上传中")
                    (send-picture (target-id sender)
                                  url)))
@@ -70,7 +70,7 @@
                                         "api/qr"
                                         `(("text" . ,text)))
                           :method :get)))
-    (save-l-picture qr (format nil "~Apicture/qr.jpg" (get-source-dir)))))
+    (save-l-picture qr (format nil "~Adatas/picture/qr.jpg" (get-source-dir)))))
 
 (add-command "qr"
              #'(lambda (sender args)
