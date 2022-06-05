@@ -16,7 +16,7 @@
   (car (last lst)))
 
 (defun random-int-r (max)
-  (let ((generator (random-state:make-generator :mersenne-twister-32 (ccl:current-time-in-nanoseconds))))
+  (let ((generator (random-state:make-generator :mersenne-twister-32 (timestamp-to-universal (now)))))
     (random-state:random-int generator 0 max)))
 
 (defun assoc-value (plist key)

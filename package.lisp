@@ -3,7 +3,7 @@
 (defpackage :qqbot.head
   (:import-from :jonathan :to-json)
   (:import-from :uiop :run-program)
-  (:use :common-lisp :random-state :yason :babel :str)
+  (:use :common-lisp :random-state :yason :babel :str :local-time)
   (:export
    :*patron*
    :run-shell
