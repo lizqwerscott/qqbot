@@ -299,8 +299,7 @@
 
 (defun str-type (str)
   (let ((object (read-from-string str)))
-    (if (numberp object)
-        )))
+    object))
 
 (defun args-type (args &optional (types nil))
   (if (and (= 0 (length args)) (= 0 (length types))) t
