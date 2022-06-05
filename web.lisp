@@ -8,7 +8,6 @@
     (format nil "~A~A" url str-args)))
 
 (defun web-post-json (host command &key args (jsonp t) (isbyte t))
-
   (multiple-value-bind (bytes code headers)
       (http-request (generate-url host command)
                     :method :post

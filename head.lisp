@@ -60,7 +60,7 @@
                    path)))
 
 (defun run-shell (program)
-  #+clozure (ccl:run-program "/bin/sh" (list "-c" (format nil "~A" program))))
+  (run-program program))
 
 (defun load-line-file (path)
   (let ((result))
