@@ -252,7 +252,9 @@
                      (send-text target (assoc-value siju "content"))
                      (send-text-lst target (list (format nil "类型:~A" (assoc-value siju "category"))
                                                  (format nil "来自:~A" (assoc-value siju "origin"))
-                                                 (format nil "作者:~A" (assoc-value siju "author")))))))) (add-command "自恋"
+                                                 (format nil "作者:~A" (assoc-value siju "author"))))))))
+
+(add-command "自恋"
              #'(lambda (sender args)
                  (dolist (line (zilie))
                    (let ((s-l (split-s line "|")))
@@ -375,5 +377,28 @@
                                                "不要让我论证这么奇怪的东西呀！")))))
                        (send-text target
                                   "请输入要论证的数字baka")))))
+
+(defun lajiSort (lj)
+  (let ((result (web-get "api.vvhan.com"
+                         "api/la.ji"
+                         :args `(("lj" . ,lj))
+                         :jsonp t)))
+    (when (and result
+               (assoc-value result "success"))
+      result)))
+
+(add-command "垃圾分类"
+             #'(lambda (sender args)
+                 (let ((target (target-id sender)))
+                   (if (args-type args (list 'symbolp))
+                       (let ((res (lajisort (first args))))
+                         (if res
+                             (send-text target
+                                        (format nil "~A是~A."
+                                                (assoc-value res "name")
+                                                (assoc-value res "sort")))
+                             (send-text target
+                                        "发送错误啦!")))
+                       (send-text target "请输入要分类的垃圾!!")))))
 
 (in-package :cl-user)

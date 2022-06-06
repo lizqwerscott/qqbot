@@ -1,10 +1,52 @@
 (in-package :qqbot.picture)
 
-(defun get-random-picture ()
+(defun get-random-h-picture ()
   (let ((picture (web-get "api.vvhan.com" "api/acgimg"
                           :args '(("type" . "json")) :jsonp t)))
     (when (assoc-value picture "success")
       (assoc-value picture "imgurl"))))
+
+(defun get-random-e-picture ()
+  (let ((picture (web-get "www.dmoe.cc"
+                          "random.php"
+                          :args '(("return" . "json"))
+                          :jsonp t)))
+    (when (string= "200" (assoc-value picture "code"))
+      (assoc-value picture "imgurl"))))
+
+(defun get-random-tou-picture ()
+  (let ((picture (car
+                  (web-get "acg.toubiec.cn"
+                           "random.php"
+                           :args '(("ret" . "json"))
+                           :jsonp t))))
+    (when (string= "ok" (assoc-value picture "mes"))
+      (assoc-value picture "imgurl"))))
+
+(defun get-random-dongf-picture ()
+  (let ((picture (web-get "img.paulzzh.com"
+                          "touhou/random"
+                          :args '(("type" . "json"))
+                          :jsonp t)))
+    (when picture
+      (list (assoc-value picture "jpegurl")
+            (assoc-value picture "preview")
+            (assoc-value picture "url"))
+      (assoc-value picture "url"))))
+
+(defun get-random-picture ()
+  (funcall
+   (random-select-list
+    (list #'get-random-dongf-picture
+          #'get-random-h-picture
+          #'get-random-tou-picture))))
+
+(defun get-random-picture-save ()
+  (format t "获取中")
+  (let ((url (get-random-picture)))
+    (format t "保存中")
+    (save-picture-url url "datas/picture")
+    url))
 
 ;;tag is list
 (defun get-pixiv-picture (tag)

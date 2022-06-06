@@ -8,6 +8,7 @@
    :*patron*
    :run-shell
    :random-int-r
+   :random-select-list
    :assoc-value
    :assoc-v
 
@@ -151,7 +152,12 @@
 (defpackage :qqbot.picture
   (:use :common-lisp :qqbot.bot :qqbot.head :qqbot.web :patron :babel :yason)
   (:export
+   :get-random-h-picture
+   :get-random-e-picture
+   :get-random-tou-picture
+   :get-random-dongf-picture
    :get-random-picture
+   :get-random-picture-save
    :save-picture
    :get-pixiv-pictures))
 
@@ -194,5 +200,5 @@
 
 (defpackage :qqbot
   (:import-from :bordeaux-threads :make-thread)
-  (:use :common-lisp :qqbot.head :qqbot.bot :qqbot.web :qqbot.card :qqbot.task :qqbot.text :qqbot.moyu :local-time :cl-schedule :patron :cl-async)
+  (:use :common-lisp :qqbot.head :qqbot.bot :qqbot.web :qqbot.picture :qqbot.card :qqbot.task :qqbot.text :qqbot.moyu :local-time :cl-schedule :patron :cl-async)
   (:export :start))

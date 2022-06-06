@@ -102,6 +102,8 @@
 (defun goodmorning ()
   (send-text *main-qq-group*
              "大家早安, 伊蕾娜爱大家哟!!!")
+  (send-picture *main-qq-group*
+                (get-random-picture-save))
   (send-text *main-qq-group*
              (zaoan))
   (send-at-text *main-qq-group*

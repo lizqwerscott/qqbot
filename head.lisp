@@ -19,6 +19,11 @@
   (let ((generator (random-state:make-generator :mersenne-twister-32 (timestamp-to-universal (now)))))
     (random-state:random-int generator 0 max)))
 
+(defun random-select-list (lst)
+  (when (listp lst)
+    (let ((select (random-int-r (- (length lst) 1))))
+      (elt lst select))))
+
 (defun assoc-value (plist key)
   (cdr (assoc key plist :test #'string=)))
 
