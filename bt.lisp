@@ -4,30 +4,6 @@
                               :host "192.168.3.3"
                               :credentials '("transmission" "transmission")))
 
-(defun getBt (str)
-  (handler-case (http-request (format nil "https://www.busdmm.xyz/search/~A&type=&parent=ce"
-                                             (purl:url-encode str))
-                                     :method :get
-                                     :user-agent :explorer)
-    (error (e)
-      (format t "error:~A~%" e)
-      nil)))
-
-(defun save (bytes)
-  (when bytes
-    (with-open-file (in (merge-pathnames "datas/web/search.html" (get-source-dir)) :direction :output :if-exists :supersede :element-type '(unsigned-byte 8))
-     (when in
-       (write-sequence bytes in)))))
-
-(defun find-movie-url (doc)
-  (let ((movie-urls (lquery:$ doc ".movie-box" (attr :href))))
-      movie-urls))
-
-(defun searchBt (str)
-  (when-bind (result (getBt str))
-    (save result)
-    (find-movie-url (lquery:$ (initialize (merge-pathnames "datas/web/search.html" (get-source-dir)))))))
-
 (defun add-bt (url)
   (transmission-add *conn* :filename url))
 
@@ -65,24 +41,6 @@
           (classify (transmission-get *conn*
                                       #(:name :rate-download :total-size :left-until-done :status)
                                       :strict t))))
-
-(add-command "磁力"
-             #'(lambda (sender args)
-                 (if (args-type args (list #'symbolp))
-                     (let ((target (target-id sender)))
-                       (send-text target "磁力搜索中...")
-                       (let ((urls (searchBt (car args))))
-                         (if urls
-                             (if (> (length urls) 3)
-                                 (progn
-                                   (send-text target "搜索结果大于三条, 发给个人.")
-                                   (dotimes (i (length urls))
-                                     (sleep 0.5)
-                                     (send-text (sender-id sender) (elt urls i))))
-                                 (send-text target (lst-line-string urls)))
-                             (send-text target "磁力搜索失败"))))
-                     (send-text (target-id sender) "参数错误")))
-             "后面跟一个参数, 为你要搜索的种子名称")
 
 (add-command "上传磁力"
              #'(lambda (sender args)

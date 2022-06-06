@@ -66,10 +66,9 @@
              "从p站获取色图(大部分为萝莉),第一个参数为要几张色图, 后面参数为要找的图片类型")
 
 (defun qr-generate (text)
-  (let ((qr (http-request (generate-url "api.vvhan.com"
-                                        "api/qr"
-                                        `(("text" . ,text)))
-                          :method :get)))
+  (let ((qr (web-get "api.vvhan.com"
+                     "api/qr"
+                     :args `(("text" . ,text)))))
     (save-l-picture qr (format nil "~Adatas/picture/qr.jpg" (get-source-dir)))))
 
 (add-command "qr"
@@ -85,8 +84,10 @@
 
 (defun check-picture (file)
   (let ((data (web-post-upload (if *remote*
-                                   "124.222.100.66:7612"
-                                   "192.168.3.3:7612") "nsfw" file :jsonp t)))
+                                   "http://124.222.100.66:7612/nsfw"
+                                   "http://192.168.3.3:7612/nsfw")
+                               file
+                               :jsonp t)))
     data))
 
 (defun setu-check ()
@@ -141,7 +142,7 @@
 (defun generate-moto (id)
   (let ((json (parse
                (octets-to-string
-                (web-post "192.168.3.3:8888" ""
+                (web-post "https://192.168.3.3:8888"
                           :args `(("id" . ,(format nil "~A" id))))))))
     (when (= 200 (assoc-value json "msg"))
       (assoc-value json "path"))))

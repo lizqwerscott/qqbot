@@ -271,7 +271,7 @@
                            (num (parse-integer (first args)))
                            (query (second args)))
                        (let ((news (handle-news (if query
-                                                    (get-news (purl:url-encode query) num)
+                                                    (get-news (quri:url-encode query) num)
                                                     (get-random-news num)))))
                          (send-text-lst target
                                         (mapcar #'(lambda (new)
@@ -332,11 +332,9 @@
                        (send-text target "无法获取")))))
 
 (defun nbbhhsh-guess (text)
-  (let ((result (web-post "lab.magiconch.com"
-                    "api/nbnhhsh/guess"
-                    :args `(("text" . ,text))
-                    :jsonp t
-                    :isbyte nil)))
+  (let ((result (web-post "https://lab.magiconch.com/api/nbnhhsh/guess"
+                          :args `(("text" . ,text))
+                          :jsonp t)))
     (format t "~A~%" result)
     (assoc-value (car result) "trans")))
 

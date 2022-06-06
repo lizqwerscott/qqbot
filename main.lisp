@@ -120,61 +120,6 @@
 
 (start-task "goodmorning")
 
-(defvar *helath-info* (make-hash-table))
-(setf (gethash 814071892 *helath-info*)
-      '(96992 112420))
-
-(setf (gethash 2497673604 *helath-info*)
-      '(95256 112420))
-
-(setf (gethash 1501319877 *helath-info*)
-      '(182437 112420))
-
-(defun get-id (user-id uv-code)
-  (web-get "mhealthyup.yingxinbao.net"
-           "welcome/publish/mobile/healthy/config/modules/details"
-           :args `(("uvCode" . ,uv-code)
-                   ("mcode" . "dayUp")
-                   ("userId" . ,user-id))
-           :jsonp t))
-
-(defun set-temparture (json &optional (temparture 36.2))
-  (setf (cdr (car (last (car (cdr (car json))))))
-        temparture)
-  json)
-
-(defun publish (user-id uv-code)
-  (web-post-json "mhealthyup.yingxinbao.net"
-                 "welcome/publish/mobile/healthy/config/modules/save"
-                 :args (set-temparture (get-id user-id uv-code))
-                 :jsonp t))
-
-(defun health-up-all ()
-  (maphash #'(lambda (people v)
-               (send-text people
-                          "正在为您上传健康打卡信息")
-               (apply #'publish v)
-               (let ((result (apply #'publish v)))
-                 (send-text people
-                            (assoc-value result "msg"))))
-           *helath-info*))
-
-(defun health-up ()
-  (send-at-text *main-qq-group*
-                (get-master)
-                " 主人, 正在为您上传健康打卡信息.")
-  (publish 96212 112420)
-  (let ((result (publish 96212 112420)))
-    (send-text *main-qq-group*
-               (assoc-value result "msg")))
-  (health-up-all))
-
-(add-task #'health-up
-          "healthup"
-          (list 8 0 :step-hour 2))
-
-(start-task "healthup")
-
 (defun run ()
   (format t "Start patron...~%")
   (start-patron *patron*)

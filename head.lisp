@@ -92,6 +92,10 @@
 (defun get-source-dir ()
   (asdf:system-source-directory :qqbot))
 
+(defun get-data-dir ()
+  (merge-pathnames "datas/"
+                   (get-source-dir)))
+
 (defun generate-path (path)
   (merge-pathnames path (get-source-dir)))
 

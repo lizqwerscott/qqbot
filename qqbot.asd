@@ -1,15 +1,11 @@
 (defsystem :qqbot
   :depends-on (:cl-ppcre
                :dexador
-               :drakma
                :cl-transmission
                :babel
                :bordeaux-threads
                :local-time
                :quri
-               :purl
-               :lquery
-               :plump
                :str
                :cl-strings
                :yason
@@ -35,8 +31,8 @@
                 :components ((:file "els")
                              (:file "miyu")))
                (:file "song")
-               (:file "weixgzh")
                (:file "minecraft")
                (:file "wiki")
                (:file "moyu")
+               (:file "health")
                (:file "main")))

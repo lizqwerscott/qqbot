@@ -26,6 +26,7 @@
    :save-json-file
    :lst-line-string
    :get-source-dir
+   :get-data-dir
    :generate-path
    :save-l-picture
    :save-picture-url
@@ -35,16 +36,18 @@
 
 (defpackage :qqbot.web
   (:import-from :quri :make-uri)
-  (:use :common-lisp :drakma :qqbot.head :babel :yason)
+  (:use :common-lisp :qqbot.head :babel :yason)
   (:export
    :generate-url
    :web-post-json
    :web-post
+   :web-post-upload
+
    :web-get
-   :web-post-upload))
+   :web-get-url))
 
 (defpackage :qqbot.bot
-  (:use :common-lisp :drakma :qqbot.head :babel :qqbot.web :patron :yason :local-time :str)
+  (:use :common-lisp :qqbot.head :babel :qqbot.web :patron :yason :local-time :str)
   (:export
    :recive-picture
    :recive-picture-off
@@ -146,16 +149,15 @@
   (:export))
 
 (defpackage :qqbot.picture
-  (:use :common-lisp :qqbot.bot :qqbot.head :qqbot.web :drakma :patron :babel :yason)
+  (:use :common-lisp :qqbot.bot :qqbot.head :qqbot.web :patron :babel :yason)
   (:export
    :get-random-picture
    :save-picture
    :get-pixiv-pictures))
 
 (defpackage :qqbot.bt
-  (:use :common-lisp :qqbot.bot :drakma :qqbot.head :cl-transmission)
-  (:export
-   :searchBt))
+  (:use :common-lisp :qqbot.bot :qqbot.head :cl-transmission)
+  (:export))
 
 (defpackage :qqbot.card
   (:import-from :cl-ppcre :scan-to-strings :regex-replace)
@@ -173,9 +175,6 @@
 (defpackage :qqbot.song
   (:use :common-lisp :qqbot.bot :qqbot.head :qqbot.web))
 
-(defpackage :qqbot.weixgzh
-  (:use :common-lisp :qqbot.bot :qqbot.head :qqbot.web :bordeaux-threads :babel :drakma :yason :qqbot.task))
-
 (defpackage :qqbot.minecraft
   (:use :common-lisp :qqbot.bot :qqbot.head :qqbot.web))
 
@@ -187,7 +186,13 @@
   (:export
    :moyu))
 
+(defpackage :qqbot.health
+  (:use :cl :qqbot.head :qqbot.web :qqbot.bot :qqbot.task)
+  (:export
+   :load-health
+   :health-up-all))
+
 (defpackage :qqbot
   (:import-from :bordeaux-threads :make-thread)
-  (:use :common-lisp :qqbot.head :qqbot.bot :qqbot.web :qqbot.card :qqbot.task :qqbot.weixgzh :qqbot.text :qqbot.moyu :local-time :cl-schedule :patron :cl-async)
+  (:use :common-lisp :qqbot.head :qqbot.bot :qqbot.web :qqbot.card :qqbot.task :qqbot.text :qqbot.moyu :local-time :cl-schedule :patron :cl-async)
   (:export :start))

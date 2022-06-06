@@ -36,12 +36,12 @@
   name)
 
 (defun load-repeat ()
-  (setf *repeat-command* (load-json-file (merge-pathnames "datas/data/repeat.json" (get-source-dir)))))
+  (setf *repeat-command* (load-json-file (merge-pathnames "data/repeat.json" (get-data-dir)))))
 
 (load-repeat)
 
 (defun save-repeat ()
-  (save-json-file (merge-pathnames "datas/data/repeat.json" (get-source-dir))
+  (save-json-file (merge-pathnames "data/repeat.json" (get-data-dir))
                   (to-json-a *repeat-command*)))
 
 (defun add-repeat (repeat)
