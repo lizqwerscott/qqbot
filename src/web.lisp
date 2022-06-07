@@ -1,3 +1,14 @@
+(defpackage :qqbot.web
+  (:import-from :quri :make-uri)
+  (:use :common-lisp :qqbot.head :babel :yason)
+  (:export
+   :generate-url
+   :web-post-json
+   :web-post
+   :web-post-upload
+
+   :web-get
+   :web-get-url))
 (in-package :qqbot.web)
 
 (defun generate-url (host command &key (args nil) (ssl nil))

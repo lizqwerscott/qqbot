@@ -1,4 +1,6 @@
-(defsystem :qqbot
+(defsystem "qqbot"
+  :version "0.1.0"
+  :author "Lizqwer scott"
   :depends-on (:cl-ppcre
                :dexador
                :cl-transmission
@@ -15,24 +17,24 @@
                :patron
                :random-state)
   :serial t
-  :components ((:file "package")
-               (:file "head")
-               (:file "web")
-               (:file "bot")
-               (:file "task")
-               (:file "text")
-               (:file "question")
-               (:file "picture")
-               (:file "bt")
-               (:file "card")
-               (:module "game"
-                :depends-on ("package" "head" "bot")
-                :serial t
-                :components ((:file "els")
-                             (:file "miyu")))
-               (:file "song")
-               (:file "minecraft")
-               (:file "wiki")
-               (:file "moyu")
-               (:file "health")
-               (:file "main")))
+  :components ((:module "src"
+                :components
+                ((:file "head")
+                 (:file "web")
+                 (:file "bot")
+                 (:file "task")
+                 (:file "text")
+                 (:file "question")
+                 (:file "picture")
+                 (:file "bt")
+                 (:file "card")
+                 (:module "game"
+                  :depends-on ("head" "bot")
+                  :serial t
+                  :components ((:file "miyu")))
+                 (:file "song")
+                 (:file "minecraft")
+                 (:file "wiki")
+                 (:file "moyu")
+                 (:file "health")
+                 (:file "main")))))

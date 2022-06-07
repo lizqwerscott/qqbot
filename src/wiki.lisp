@@ -1,3 +1,5 @@
+(defpackage :qqbot.wiki
+  (:use :common-lisp :qqbot.bot :qqbot.head :qqbot.web :yason))
 (in-package :qqbot.wiki)
 
 (defun get-info (title)

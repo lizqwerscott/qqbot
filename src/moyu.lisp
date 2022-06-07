@@ -1,3 +1,7 @@
+(defpackage :qqbot.moyu
+  (:use :common-lisp :qqbot.bot :qqbot.head :qqbot.web)
+  (:export
+   :moyu))
 (in-package :qqbot.moyu)
 
 (defun get-json ()

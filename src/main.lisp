@@ -1,3 +1,20 @@
+(defpackage :qqbot
+  (:import-from :bordeaux-threads :make-thread)
+  (:use
+   :common-lisp
+   :qqbot.head
+   :qqbot.bot
+   :qqbot.web
+   :qqbot.picture
+   :qqbot.card
+   :qqbot.task
+   :qqbot.text
+   :qqbot.moyu
+   :local-time
+   :cl-schedule
+   :patron
+   :cl-async)
+  (:export :start))
 (in-package :qqbot)
 
 (add-command "添加管理"

@@ -1,3 +1,14 @@
+(defpackage :qqbot.picture
+  (:use :common-lisp :qqbot.bot :qqbot.head :qqbot.web :patron :babel :yason)
+  (:export
+   :get-random-h-picture
+   :get-random-e-picture
+   :get-random-tou-picture
+   :get-random-dongf-picture
+   :get-random-picture
+   :get-random-picture-save
+   :save-picture
+   :get-pixiv-pictures))
 (in-package :qqbot.picture)
 
 (defun get-random-h-picture ()

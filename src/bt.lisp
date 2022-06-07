@@ -1,3 +1,6 @@
+(defpackage :qqbot.bt
+  (:use :common-lisp :qqbot.bot :qqbot.head :cl-transmission)
+  (:export))
 (in-package :qqbot.bt)
 
 (defvar *conn* (make-instance 'transmission-connection

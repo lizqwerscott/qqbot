@@ -1,3 +1,37 @@
+(defpackage :qqbot.head
+  (:import-from :jonathan :to-json)
+  (:import-from :uiop :run-program)
+  (:use :common-lisp :random-state :yason :babel :str :local-time)
+  (:export
+   :*patron*
+   :run-shell
+   :random-int-r
+   :random-select-list
+   :assoc-value
+   :assoc-v
+
+   :split-s
+   :string-merge
+   :string-merges
+   :bits-to-json
+
+   :get-directory
+   :directoryp
+   :list-directory
+   :make-next-dir
+
+   :load-line-file
+   :load-json-file
+   :save-json-file
+   :lst-line-string
+   :get-source-dir
+   :get-data-dir
+   :generate-path
+   :save-l-picture
+   :save-picture-url
+   :when-bind
+   :last1
+   :to-json-a))
 (in-package :qqbot.head)
 
 (defvar *patron* (make-instance 'patron:patron

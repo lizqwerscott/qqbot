@@ -1,3 +1,29 @@
+(defpackage :qqbot.task
+  (:use :common-lisp :qqbot.head :qqbot.bot :local-time :patron)
+  (:export
+   :task-name
+   :task-time
+   :task-func
+   :task-runp
+
+   :add-task
+   :remove-task
+   :start-task
+   :stop-task
+   :run-tasks
+
+   :add-start-task
+   :remove-start-task
+   :run-start-tasks
+
+   :get-time
+   :get-time-range
+   :time=
+   :time-mintue=
+   :time-in
+
+   :is-reset
+   :reset-task-time))
 (in-package :qqbot.task)
 
 (defstruct task

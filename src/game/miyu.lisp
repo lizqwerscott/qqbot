@@ -1,3 +1,6 @@
+(defpackage :qqbot.game
+  (:use :common-lisp :qqbot.bot :qqbot.head :str)
+  (:export))
 (in-package :qqbot.game)
 
 (defparameter *miyu* nil)

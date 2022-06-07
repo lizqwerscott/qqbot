@@ -1,3 +1,11 @@
+(defpackage :qqbot.card
+  (:import-from :cl-ppcre :scan-to-strings :regex-replace)
+  (:use :common-lisp :qqbot.bot :qqbot.head)
+  (:export
+   :handle-code
+   :load-cards
+   :list-cards
+   :draw-card))
 (in-package :qqbot.card)
 
 (defparameter *cards* (make-hash-table :test #'equal))

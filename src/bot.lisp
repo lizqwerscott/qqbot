@@ -1,3 +1,64 @@
+(defpackage :qqbot.bot
+  (:use :common-lisp :qqbot.head :babel :qqbot.web :patron :yason :local-time :str)
+  (:export
+   :recive-picture
+   :recive-picture-off
+
+   :people
+   :make-people
+   :people-id
+   :people-name
+   :get-master
+   :is-master
+   :add-admin
+   :remove-admin
+   :is-admin
+   :changep
+   :list-admin
+   :save-admin
+   :load-admin
+
+   :get-group-list
+   :get-group-member
+
+   :verify :bind :release
+   :mute-group-member
+   :gmessage-text
+   :gmessage-picture
+   :gmessage-at
+   :send-message
+   :send-text
+   :send-text-lst
+   :send-picture
+   :send-local-picture
+   :send-picture-and-text
+   :send-picture-and-text-lst
+   :send-music-share
+   :send-json
+   :send-at
+   :send-at-text
+
+   :sender-groupp
+   :sender-id
+   :sender-name
+   :group-id
+   :group-name
+   :target-id
+   :get-text-message-chain
+
+   :add-command
+   :remove-command
+
+   :add-mode-command
+   :remove-mode-command
+   :active-mode
+   :deactive-mode
+
+   :fetch-last-message
+   :handle-message
+   :get-all-command
+   :run
+   :args-type))
 (in-package :qqbot.bot)
 
 (defvar *session* nil)

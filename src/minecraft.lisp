@@ -1,3 +1,5 @@
+(defpackage :qqbot.minecraft
+  (:use :common-lisp :qqbot.bot :qqbot.head :qqbot.web))
 (in-package :qqbot.minecraft)
 
 (defvar *key* "bc361c81d384481790c4e7fd229e3022")

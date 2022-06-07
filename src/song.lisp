@@ -1,3 +1,5 @@
+(defpackage :qqbot.song
+  (:use :common-lisp :qqbot.bot :qqbot.head :qqbot.web))
 (in-package :qqbot.song)
 
 (defun parse-data (data &optional (data-name "result"))

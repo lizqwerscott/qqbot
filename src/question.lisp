@@ -1,3 +1,6 @@
+(defpackage :qqbot.question
+  (:use :common-lisp :qqbot.bot :qqbot.head :qqbot.web :yason)
+  (:export))
 (in-package :qqbot.question)
 
 (defun search-ti (keyword)

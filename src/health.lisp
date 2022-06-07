@@ -1,3 +1,8 @@
+(defpackage :qqbot.health
+  (:use :cl :qqbot.head :qqbot.web :qqbot.bot :qqbot.task)
+  (:export
+   :load-health
+   :health-up-all))
 (in-package :qqbot.health)
 
 (defvar *health-info* nil)

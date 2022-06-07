@@ -1,3 +1,11 @@
+(defpackage :qqbot.text
+  (:use :common-lisp :qqbot.bot :qqbot.web :qqbot.head :local-time)
+  (:export
+   :get-random-text
+   :zaoan
+   :wanan
+   :history-today
+   :history-today-s))
 (in-package :qqbot.text)
 
 (defparameter *mi-yan* nil)
