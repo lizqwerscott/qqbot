@@ -17,6 +17,47 @@
   (:export :start))
 (in-package :qqbot)
 
+(defparameter *add-friend* nil)
+
+(defun add-friend (event-id from-id group-id nick message)
+  (setf *add-friend*
+        (append *add-friend*
+                (list
+                 (list event-id from-id group-id nick message)))))
+
+(add-command "添加好友信息"
+             #'(lambda (sender args)
+                 (let ((target (target-id sender)))
+                   (if (changep (sender-id sender))
+                       (progn
+                         (send-text target "下面是添加好友的信息:")
+                         (dotimes (i (length *add-friend*))
+                           (let ((friend (elt *add-friend* i)))
+                             (send-text-lst target
+                                          (list
+                                           (format nil "i: ~A" i)
+                                           (format nil "Id: ~A" (second friend))
+                                           (format nil "nick: ~A" (third friend))
+                                           (format nil "message: ~A" (fifth friend))))))
+                         (send-text target "没有了!"))
+                       (send-text target "只有主人和管理员才可以查看哟!")))))
+
+(add-command "处理好友请求"
+             #'(lambda (sender args)
+                 (let ((target (target-id sender)))
+                   (if (changep (sender-id sender))
+                       (let ((i (parse-integer (car args)))
+                             (operate (parse-integer (second args)))
+                             (message (third args)))
+                         (when (and i message (< i (length *add-friend*)))
+                           (let ((friend (elt *add-friend* i)))
+                             (handle-new-friend-request (car friend)
+                                                        (second friend)
+                                                        (third friend)
+                                                        operate
+                                                        message))))
+                       (send-text target "只有主人和管理员才可以处理哟!")))))
+
 (add-command "添加管理"
              #'(lambda (sender args)
                  (let ((target (target-id sender)))
@@ -169,6 +210,12 @@
         (if message
             (let ((type (assoc-value message "type")))
               (format t "type:~A~%" type)
+              (when (string= "NewFriendRequestEvent" type)
+                (add-friend (assoc-value message "eventId")
+                            (assoc-value message "fromId")
+                            (assoc-value message "groupId")
+                            (assoc-value message "nick")
+                            (assoc-value message "message")))
               (when (or (string= "FriendMessage" type) (string= "GroupMessage" type))
                 ;;(format t "message:~A~%" message)
                 (handle-message message)))))))

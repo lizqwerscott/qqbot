@@ -23,6 +23,9 @@
 
    :verify :bind :release
    :mute-group-member
+
+   :handle-new-friend-request
+
    :gmessage-text
    :gmessage-picture
    :gmessage-at
@@ -333,6 +336,15 @@
                        ("target" . ,group)
                        ("memberId" . ,member)
                        ("time" . ,time))))
+
+(defun handle-new-friend-request (event-id from-id group-id operate message)
+  (send-command-post "resp/newFriendRequestEvent"
+                     `(("sessionKey" . ,*session*)
+                       ("eventId" . ,event-id)
+                       ("fromId" . ,from-id)
+                       ("groupId" . ,group-id)
+                       ("operate" . ,operate)
+                       ("message" . ,message))))
 
 (defun add-command (str func &optional describe)
   (setf (gethash str *command-map*) func)
