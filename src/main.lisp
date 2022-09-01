@@ -189,7 +189,10 @@
                 (make-instance 'patron:job
                                :function #'(lambda ()
                                              (sleep (first task))
-                                             (funcall (second task))))))
+                                             (handler-case
+                                                 (funcall (second task))
+                                               (error (c)
+                                                 (format t "[ERROR]:~A~%" c)))))))
   (format t "finish qqbot start event~%")
   (with-event-loop ()
     (with-interval (1)
