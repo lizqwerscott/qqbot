@@ -25,15 +25,6 @@
     (when (string= "200" (assoc-value picture "code"))
       (assoc-value picture "imgurl"))))
 
-(defun get-random-tou-picture ()
-  (let ((picture (car
-                  (web-get "acg.toubiec.cn"
-                           "random.php"
-                           :args '(("ret" . "json"))
-                           :jsonp t))))
-    (when (string= "ok" (assoc-value picture "mes"))
-      (assoc-value picture "imgurl"))))
-
 (defun get-random-dongf-picture ()
   (let ((picture (web-get "img.paulzzh.com"
                           "touhou/random"
@@ -49,8 +40,7 @@
   (funcall
    (random-select-list
     (list #'get-random-dongf-picture
-          #'get-random-h-picture
-          #'get-random-tou-picture))))
+          #'get-random-h-picture))))
 
 (defun get-random-picture-save ()
   (format t "获取中")
