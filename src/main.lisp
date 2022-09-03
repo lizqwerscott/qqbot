@@ -140,7 +140,7 @@
               (send-text *main-qq-group*
                          (wanan)))
           "goodnight"
-          (list 23 00))
+          (list 23 00 :step-mintue 30))
 
 (start-task "goodnight")
 
