@@ -191,7 +191,7 @@
 (add-command "笑话"
              #'(lambda (sender args)
                  (send-text (target-id sender)
-                                    (get-random-text "xh")))
+                                    (get-random-text "joke")))
              "获取随机一条笑话")
 
 (add-command "骚话"
