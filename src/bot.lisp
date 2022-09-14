@@ -461,7 +461,8 @@
              *command-mode-map*)))
 
 (defun handle-command (text target sender)
-  (if (gethash (first text) *command-map*)
+  (if (and text
+           (gethash (first text) *command-map*))
       (submit-job *patron*
                   (make-instance 'patron:job
                                  :function (lambda ()
@@ -511,13 +512,16 @@
                                target
                                sender)
           (when (or (string= "@伊蕾娜" (first message-text))
-                    (string= "伊蕾娜" (first message-text)))
-            (format t "handle command:~S~%" message-text)
-            (when (cdr message-text)
-              (handle-command (append (cdr message-text)
-                                      (cdr (cdr message-chain)))
-                              target
-                              sender)))))
+                    (string= "伊蕾娜" (first message-text))
+                    (= target (sender-id sender)))
+            (format t "handle command: ~S~%" message-text)
+            (handle-command (append (if (or (string= "@伊蕾娜" (first message-text))
+                                            (string= "伊蕾娜" (first message-text)))
+                                        (cdr message-text)
+                                        message-text)
+                                    (cdr (cdr message-chain)))
+                            target
+                            sender))))
       (when (string= "App" (assoc-value first-str "type"))
         (let ((content (parse (assoc-value first-str "content"))))
           (if (string= "哔哩哔哩" (assoc-value content "desc"))
