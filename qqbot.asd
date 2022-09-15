@@ -37,4 +37,5 @@
                  (:file "wiki")
                  (:file "moyu")
                  (:file "health")
+                 (:file "class-schedule")
                  (:file "main")))))
