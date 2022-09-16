@@ -38,10 +38,14 @@
                   (format nil "~A ~A"
                           i
                           (if (listp data)
-                              (format nil "~A ~A ~A"
-                                      (assoc-value data "name")
-                                      (assoc-value data "room")
-                                      (assoc-value data "teacher"))
+                              (let ((first-week (car
+                                                 (assoc-value data
+                                                              "weeks"))))
+                                (format nil "~A ~A ~A ~A"
+                                        (assoc-value data "name")
+                                        (assoc-value first-week "room")
+                                        (assoc-value first-week "teacher")
+                                        (assoc-value first-week "week")))
                               "没课!"))))
             (elt class-schedule (- week 1))
             (list "第一节" "第二节" "第三节" "第四节"))))
