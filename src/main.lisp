@@ -10,6 +10,7 @@
    :qqbot.task
    :qqbot.text
    :qqbot.moyu
+   :qqbot.class-schedule
    :local-time
    :cl-schedule
    :patron
@@ -172,7 +173,8 @@
   (history-today-s *main-qq-group*
                    :number 3
                    :page 1)
-  (moyu *main-qq-group*))
+  (moyu *main-qq-group*)
+  (send-today-class-schedule))
 
 (add-task #'goodmorning
           "goodmorning"

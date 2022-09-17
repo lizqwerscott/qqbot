@@ -1,7 +1,8 @@
 (defpackage :qqbot.class-schedule
   (:use :cl :qqbot.head :qqbot.bot :qqbot.task :local-time)
   (:export
-   ))
+   :get-class-schedule
+   :send-today-class-schedule))
 (in-package :qqbot.class-schedule)
 
 (defparameter +person-class+ nil)
@@ -30,8 +31,9 @@
 (defun probe-week-s ()
   "signal")
 
-(defun get-today-class-schedule (class-schedule)
-  (let ((week (timestamp-day-of-week (today))))
+(defun get-week-class-schedule (class-schedule &optional (week (timestamp-day-of-week (today))))
+  (when (and (<= week 5)
+             (> week 0))
     (mapcar #'(lambda (class i)
                 (let ((data (assoc-value class
                                          (probe-week-s))))
@@ -50,12 +52,43 @@
             (elt class-schedule (- week 1))
             (list "第一节" "第二节" "第三节" "第四节"))))
 
+(defun get-class-schedule (person &optional (week (timestamp-day-of-week (today))))
+  (get-week-class-schedule (load-class-schedule
+                            (search-person-class person))
+                           week))
+
+(defun send-today-class-schedule ()
+  (mapcar #'(lambda (class)
+              (let ((class-schedule (load-class-schedule
+                                     (car class)))
+                    (class-person (assoc-value (cdr class)
+                                               "person")))
+                (let ((week-s (get-week-class-schedule class-schedule)))
+                  (dolist (i class-person)
+                    (if week-s
+                        (send-text-lst i
+                                       week-s)
+                        (send-text i
+                                   "今天没课!"))))))
+          (assoc-value +person-class+
+                       "class")))
+
 (add-command "课表"
              #'(lambda (sender args)
                  (declare (ignore args))
-                 (send-text-lst (target-id sender)
-                                (get-today-class-schedule
-                                 (load-class-schedule
-                                  (search-person-class
-                                   (sender-id sender))))))
+                 (let ((class (search-person-class
+                               (sender-id sender))))
+                   (if class
+                       (let ((schedule (load-class-schedule class)))
+                         (if schedule
+                             (let ((week-s (get-week-class-schedule schedule)))
+                               (if week-s
+                                   (send-text-lst (target-id sender)
+                                                  week-s)
+                                   (send-text (target-id sender)
+                                              "今天没课!")))
+                             (send-text (target-id sender)
+                                        "没有你们班的课表!")))
+                       (send-text (target-id sender)
+                                  "不知道你是那个班的!"))))
              "获取今日课表")
