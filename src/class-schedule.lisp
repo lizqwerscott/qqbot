@@ -29,7 +29,18 @@
       (load-json-file path))))
 
 (defun probe-week-s ()
-  "signal")
+  (let ((day-week (truncate
+                   (/ (- (timestamp-to-universal
+                          (today))
+                         (timestamp-to-universal
+                          (encode-timestamp 0 0 0 8 12 9 2022)))
+                      (* 3600 24)
+                      7))))
+    (if (= 0
+           (mod day-week
+                2))
+        "signal"
+        "double")))
 
 (defun get-week-class-schedule (class-schedule &optional (week (timestamp-day-of-week (today))))
   (when (and (<= week 5)

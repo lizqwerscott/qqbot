@@ -6,7 +6,7 @@
 
 (defun get-json ()
   (web-get "api.j4u.ink"
-           "proxy/remote/moyu.json"
+           "v1/store/other/proxy/remote/moyu.json"
            :jsonp t))
 
 (defun handle-moyu (json)
