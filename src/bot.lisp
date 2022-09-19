@@ -68,6 +68,7 @@
 (defparameter *message-size* 0)
 (defparameter *group-list* (make-array 3 :fill-pointer 0 :adjustable 1))
 
+(defparameter *bot-qq* 1154499407)
 (defparameter *master* 1963771277)
 (defparameter *admin* (make-array 1 :fill-pointer 0 :adjustable 1))
 
@@ -187,12 +188,12 @@
     (setf *session* (assoc-value message "session"))
     *session*))
 
-(defun bind (&optional (qq-id 3027736450))
+(defun bind (&optional (qq-id *bot-qq*))
   (send-command-post "bind"
                      `(("sessionKey" . ,*session*)
                        ("qq" . ,qq-id))))
 
-(defun release (&optional (qq-id 3027736450))
+(defun release (&optional (qq-id *bot-qq*))
   (send-command-get "release"
                     `(("sessionKey" . ,*session*)
                       ("qq" . ,qq-id))))
@@ -495,7 +496,7 @@
               (ensure-directories-exist dir))
             (save-picture-url url path image-id))))
       (when (string= "At" (assoc-value first-str "type"))
-        (when (= 3027736450 (assoc-value first-str "target"))
+        (when (= *bot-qq* (assoc-value first-str "target"))
           (when (and (third message-chain)
                      (string= "Plain" (assoc-value (third message-chain) "type")))
             (format t "handle command:~S~%" (assoc-value (third message-chain) "text"))
@@ -538,7 +539,7 @@
                                                   (position "?"
                                                             url
                                                             :test #'string=)))))))))))))
-
+(list 1 2 3)
 (defun get-all-command ()
   (let ((result nil))
     (maphash #'(lambda (k v)
