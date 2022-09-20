@@ -31,7 +31,8 @@
    :save-picture-url
    :when-bind
    :last1
-   :to-json-a))
+   :to-json-a
+   :now-today))
 (in-package :qqbot.head)
 
 (defvar *patron* (make-instance 'patron:patron
@@ -86,7 +87,7 @@
 (defun get-directory (file)
   (make-pathname :directory (pathname-directory file)))
 
-(defun directoryp (dir) 
+(defun directoryp (dir)
   (equal dir (get-directory dir)))
 
 (defun make-next-dir (dir-lst path)
@@ -161,5 +162,11 @@
     (encode-alist alist out)
     (get-output-stream-string out)))
 
-(in-package :cl-user)
+(defun now-today ()
+  (let ((now-time (now)))
+    (encode-timestamp 0 0 0 8
+                      (timestamp-day now-time)
+                      (timestamp-month now-time)
+                      (timestamp-year now-time))))
 
+(in-package :cl-user)

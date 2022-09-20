@@ -96,7 +96,7 @@
 
 (defun get-today ()
   (format-timestring nil
-                     (today)
+                     (now-today)
                      :format '((:month 2)
                                (:day 2))))
 
