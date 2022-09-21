@@ -14,13 +14,17 @@
       (load-class-person (merge-pathnames "data/class.json"
                                            (get-data-dir))))
 
-(defun search-person-class (person-qq)
-  (car
-   (find person-qq
-         (assoc-value +person-class+ "class")
-         :key #'(lambda (x)
-                  (car (cdr (car (cdr x)))))
-         :test #'=)))
+(defun search-person-class (person-qq &optional (classs (assoc-value +person-class+
+                                                                     "class")))
+  (when classs
+    (let ((res (find person-qq
+                     (assoc-value (cdr (car classs))
+                                  "person")
+                     :test #'=)))
+      (if res
+          (car (car classs))
+          (search-person-class person-qq
+                               (cdr classs))))))
 
 (defun load-class-schedule (class)
   (let ((path (merge-pathnames (format nil "classSchedule/~A.json" class)
