@@ -232,7 +232,7 @@
                                    (send-text target (car miyans))
                                    (send-text-lst target miyan))
                                  (send-text target (format nil "~A --~A" miyan (car miyans)))))))
-                       (send-text target "参数错误, 例子:伊蕾娜 名言 2 或者 伊蕾娜 名言")))))
+                       (send-text target (format nil "参数错误, 例子:~A 名言 2 或者 ~A 名言" (get-bot-name)))))))
 
 (add-command "名言人物"
              #'(lambda (sender args)
@@ -290,7 +290,8 @@
                                                             (assoc-value new "title")
                                                             (assoc-value new "ctime")))
                                                 news))))
-                     (send-text (target-id sender) "参数错误,例子:伊蕾娜 新闻 3 或者 伊蕾娜 新闻 3 疫苗"))))
+                     (send-text (target-id sender)
+                                (format nil "参数错误,例子:~A 新闻 3 或者 ~A 新闻 3 疫苗" (get-bot-name))))))
 
 (add-command "舔狗日记"
              #'(lambda (sender args)

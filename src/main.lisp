@@ -98,7 +98,7 @@
                                    (if (is-admin (sender-id sender)) "管理员"
                                        "陌生人"))))
 		   (send-text (target-id sender)
-                                      (format nil "你好，~A，我是伊蕾娜。" chenhu)))))
+                              (format nil "你好，~A，我是~A。" chenhu (get-bot-name))))))
 
 (add-command "run"
              #'(lambda (sender args)
@@ -155,12 +155,13 @@
 (start-task "goodsleep")
 
 (add-start-task #'(lambda ()
-                    (send-text (get-master) "伊蕾娜起床了!!!"))
+                    (send-text (get-master)
+                               (format nil "~A起床了!!!" (get-bot-name))))
                 "hello")
 
 (defun goodmorning ()
   (send-text *main-qq-group*
-             "大家早安, 伊蕾娜爱大家哟!!!")
+             (format nil "大家早安, ~A爱大家哟!!!" (get-bot-name)))
   (send-picture *main-qq-group*
                 (get-random-picture-save))
   (send-text *main-qq-group*

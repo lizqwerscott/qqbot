@@ -4,6 +4,8 @@
    :recive-picture
    :recive-picture-off
 
+   :get-bot-name
+
    :people
    :make-people
    :people-id
@@ -69,6 +71,9 @@
 (defparameter *group-list* (make-array 3 :fill-pointer 0 :adjustable 1))
 
 (defparameter *bot-qq* 1154499407)
+(defparameter *bot-name* "初音")
+(defun get-bot-name ()
+  *bot-name*)
 (defparameter *master* 1963771277)
 (defparameter *admin* (make-array 1 :fill-pointer 0 :adjustable 1))
 
@@ -512,12 +517,12 @@
           (handle-mode-message message-text
                                target
                                sender)
-          (when (or (string= "@伊蕾娜" (first message-text))
-                    (string= "伊蕾娜" (first message-text))
+          (when (or (string= (format nil "@~A" (get-bot-name)) (first message-text))
+                    (string= (get-bot-name) (first message-text))
                     (= target (sender-id sender)))
             (format t "handle command: ~S~%" message-text)
-            (handle-command (append (if (or (string= "@伊蕾娜" (first message-text))
-                                            (string= "伊蕾娜" (first message-text)))
+            (handle-command (append (if (or (string= (format nil "@~A" (get-bot-name)) (first message-text))
+                                            (string= (get-bot-name) (first message-text)))
                                         (cdr message-text)
                                         message-text)
                                     (cdr (cdr message-chain)))
@@ -560,9 +565,11 @@
                                  (if help
                                      (send-text target help)
                                      (send-text target "这个命令没有帮助,这么简单的命令还需要看帮助,你真是太弱了")))
-                               (send-text target "没有这个命令, 你可以用 伊蕾娜 help 来获取所以命令"))
+                               (send-text target
+                                          (format nil "没有这个命令, 你可以用 ~A help 来获取所以命令" (get-bot-name))))
                            (progn
-                             (send-text target "命令的使用方法 伊蕾娜 命令 参数1 参数2,所有命令后面的参数以空格分割, help 后面加命令的名字获取每条命令详细帮助")
+                             (send-text target
+                                        (format nil "命令的使用方法 ~A 命令 参数1 参数2,所有命令后面的参数以空格分割, help 后面加命令的名字获取每条命令详细帮助" (get-bot-name)))
                              (send-text target
                                                 (lst-line-string commands)))))
                      (send-text (target-id sender) "参数不对"))))
@@ -575,7 +582,7 @@
                          (add-repeat `(,(first args) . ,(second args)))
                          (send-text target "成功"))
                        (send-text target "参数错误"))))
-             "第一个参数为你说的,第二个参数为伊蕾娜回复的")
+             (format nil "第一个参数为你说的,第二个参数为~A回复的" (get-bot-name)))
 
 (add-command "删除回复"
              #'(lambda (sender args)
@@ -618,6 +625,7 @@
                                (send-nudge (parse-integer (first args))
                                            (qq-group-id group)))
                              (send-text target "群号请写列出群聊的编号")))
-                       (send-text target "参数错误, 第一个参数为 发的qq号, 第二个为在那个群, 第三个为几次 (最多3次)示列:伊蕾娜 1963771277 0 5")))))
+                       (send-text target
+                                  (format nil "参数错误, 第一个参数为 发的qq号, 第二个为在那个群, 第三个为几次 (最多3次)示列:~A 1963771277 0 5") (get-bot-name))))))
 
 (in-package :cl-user)

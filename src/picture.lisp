@@ -120,7 +120,8 @@
                    (format t "text:~A~%" (car args))
                    (if (car args)
                        (send-local-picture target (qr-generate (car args)))
-                       (send-text target "参数错误, 例子:伊蕾娜 qr hello")))))
+                       (send-text target
+                                  (format nil "参数错误, 例子:~A qr hello") (get-bot-name))))))
 
 (defparameter *jance* nil)
 (defparameter *remote* t)
