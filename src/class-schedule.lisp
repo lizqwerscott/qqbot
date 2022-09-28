@@ -1,11 +1,13 @@
 (defpackage :qqbot.class-schedule
-  (:use :cl :qqbot.head :qqbot.bot :qqbot.task :local-time)
+  (:import-from :yason :parse)
+  (:use :cl :qqbot.head :qqbot.bot :qqbot.task :local-time :qqbot.web)
   (:export
    :get-class-schedule
    :send-today-class-schedule))
 (in-package :qqbot.class-schedule)
 
 (defparameter +person-class+ nil)
+(defparameter +remote-address+ "8.219.190.193:8089")
 
 (defun load-class-person (path)
   (load-json-file path))
@@ -14,66 +16,33 @@
       (load-class-person (merge-pathnames "data/class.json"
                                            (get-data-dir))))
 
-(defun search-person-class (person-qq &optional (classs (assoc-value +person-class+
-                                                                     "class")))
-  (when classs
-    (let ((res (find person-qq
-                     (assoc-value (cdr (car classs))
-                                  "person")
-                     :test #'=)))
-      (if res
-          (car (car classs))
-          (search-person-class person-qq
-                               (cdr classs))))))
+(defun search-person-name (person-qq &optional (person (assoc-value +person-class+
+                                                                    "person")))
+  (when person
+    (if (= person-qq
+           (cdr
+            (car person)))
+        (car (car person))
+        (search-person-name person-qq
+                            (cdr person)))))
 
-(defun load-class-schedule (class)
-  (let ((path (merge-pathnames (format nil "classSchedule/~A.json" class)
-                               (get-data-dir))))
-    (when (probe-file path)
-      (load-json-file path))))
+(defun get-today-class-schedule (name)
+  (web-post-json +remote-address+
+                            "todayclass"
+                            :args `(("person" . ,name)
+                                    ("jsonp" . t))))
 
+(defun get-tomorrow-class-schedule (name)
+  (web-post-json +remote-address+
+                 "tomorrowclass"
+                 :args `(("person" . ,name)
+                         ("jsonp" . t))))
 
-
-(defun probe-week-s ()
-  (let ((day-week (truncate
-                   (/ (- (timestamp-to-universal
-                          (now-today))
-                         (timestamp-to-universal
-                          (encode-timestamp 0 0 0 8 12 9 2022)))
-                      (* 3600 24)
-                      7))))
-    (format t "~A~%" day-week)
-    (if (= 0
-           (mod day-week
-                2))
-        "signal"
-        "double")))
-
-(defun get-week-class-schedule (class-schedule &optional (week (timestamp-day-of-week (now-today))))
-  (when (and (<= week 5)
-             (> week 0))
-    (mapcar #'(lambda (class i)
-                (let ((data (assoc-value class
-                                         (probe-week-s))))
-                  (format nil "~A ~A"
-                          i
-                          (if (listp data)
-                              (let ((first-week (car
-                                                 (assoc-value data
-                                                              "weeks"))))
-                                (format nil "~A ~A ~A ~A"
-                                        (assoc-value data "name")
-                                        (assoc-value first-week "room")
-                                        (assoc-value first-week "teacher")
-                                        (assoc-value first-week "week")))
-                              "没课!"))))
-            (elt class-schedule (- week 1))
-            (list "第一节" "第二节" "第三节" "第四节"))))
-
-(defun get-class-schedule (person &optional (week (timestamp-day-of-week (now-today))))
-  (get-week-class-schedule (load-class-schedule
-                            (search-person-class person))
-                           week))
+(defun handle-class-schedule (res)
+  (let ((data (parse res)))
+        (when (= 200
+                 (assoc-value data "msg"))
+          (assoc-value data "result"))))
 
 (defun send-today-class-schedule ()
   (mapcar #'(lambda (class)
@@ -94,19 +63,34 @@
 (add-command "课表"
              #'(lambda (sender args)
                  (declare (ignore args))
-                 (let ((class (search-person-class
-                               (sender-id sender))))
-                   (if class
-                       (let ((schedule (load-class-schedule class)))
-                         (if schedule
-                             (let ((week-s (get-week-class-schedule schedule)))
-                               (if week-s
-                                   (send-text-lst (target-id sender)
-                                                  week-s)
-                                   (send-text (target-id sender)
-                                              "今天没课!")))
+                 (let ((person-name (search-person-name
+                                     (sender-id sender))))
+                   (if person-name
+                       (let ((class (handle-class-schedule
+                                     (get-today-class-schedule
+                                      person-name))))
+                         (if class
+                             (send-text-lst (target-id sender)
+                                            class)
                              (send-text (target-id sender)
-                                        "没有你们班的课表!")))
+                                        "今天没课!")))
                        (send-text (target-id sender)
                                   "不知道你是那个班的!"))))
              "获取今日课表")
+
+(add-command "明天课表"
+             #'(lambda (sender args)
+                 (declaim (ignore args))
+                 (let ((person-name (search-person-name
+                                     (sender-id sender))))
+                   (if person-name
+                       (let ((class (handle-class-schedule
+                                     (get-tomorrow-class-schedule
+                                      person-name))))
+                         (if class
+                             (send-text-lst (target-id sender)
+                                            class)
+                             (send-text (target-id sender)
+                                        "今天没课!")))
+                       (send-text (target-id sender)
+                                  "不知道你是那个班的!")))))

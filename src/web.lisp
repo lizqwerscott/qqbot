@@ -35,11 +35,15 @@
                 :headers '(("content-type" . "application/json; charset=utf-8")))
     (declare (ignorable status uri stream))
     (if (and jsonp
-             (str:starts-with-p "application/json"
-                                (gethash "content-type"
-                                         respone-headers)))
-        (parse body)
-        body)))
+             (str:contains? "application/json"
+                            (gethash "content-type"
+                                     respone-headers)))
+        (parse (if (stringp body)
+                   body
+                   (octets-to-string body)))
+        (if (stringp body)
+            body
+            (octets-to-string body)))))
 
 (defun web-post (url &key args (jsonp t))
   (multiple-value-bind (body status respone-headers uri stream)
@@ -77,4 +81,3 @@
         text)))
 
 (in-package :cl-user)
-
