@@ -7,7 +7,7 @@
 (in-package :qqbot.class-schedule)
 
 (defparameter +person-class+ nil)
-(defparameter +remote-address+ "8.219.190.193:8089")
+(defparameter +remote-address+ "124.222.100.66:8089")
 
 (defun load-class-person (path)
   (load-json-file path))
