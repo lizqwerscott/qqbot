@@ -33,7 +33,7 @@
                   :serial t
                   :components ((:file "miyu")))
                  (:file "song")
-                 (:file "minecraft")
+                 ;; (:file "minecraft")
                  (:file "wiki")
                  (:file "moyu")
                  (:file "health")
